@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="form-page">
+    <div class="profile-top">
+      <div class="avatar" id="profile-initials"></div>
+      <div>
+        <h1 id="profile-name"></h1>
+        <p class="subtitle" id="profile-email"></p>
+      </div>
+    </div>
+
+    <form class="form-card" action="#" method="post">
+      <h2>Account Details</h2>
+
+      <div class="field">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" readonly>
+        <p class="hint">Your email cannot be changed.</p>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+
+    <form class="form-card" action="#" method="post">
+      <h2>Change Password</h2>
+
+      <div class="field">
+        <label for="current">Current Password</label>
+        <div class="input-wrap">
+          <input type="password" id="current" name="current" required>
+          <button type="button" class="toggle-eye" aria-label="Show password">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">New Password</label>
+        <div class="input-wrap">
+          <input type="password" id="password" name="password" minlength="8" required>
+          <button type="button" class="toggle-eye" aria-label="Show password">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <p class="hint">Must be at least 8 characters long</p>
+      </div>
+
+      <div class="field">
+        <label for="confirm">Confirm New Password</label>
+        <div class="input-wrap">
+          <input type="password" id="confirm" name="confirm" required>
+          <button type="button" class="toggle-eye" aria-label="Show password">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </div>
+    </form>
+
+    <div class="form-card logout-card">
+      <div>
+        <h2>Log Out</h2>
+        <p class="hint">Sign out of HeronSearch on this device.</p>
+      </div>
+      <a href="login.html" class="btn btn-outline">Log Out</a>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+  <script src="../js/form.js"></script>
+</body>
+</html>

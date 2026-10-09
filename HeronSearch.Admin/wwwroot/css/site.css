@@ -1,0 +1,968 @@
+/*
+ * HeronSearch Admin styles.
+ * Loaded after Bootstrap 5.3.3 and Bootstrap Icons, both served from wwwroot/lib.
+ * Every color is a CSS variable. Nothing is loaded from outside wwwroot, no other style sheets are
+ * imported, and there are no web fonts: text uses Bootstrap's system font stack.
+ *
+ * 1. Brand variables      5. Components
+ * 2. Bootstrap overrides  6. Status badges
+ * 3. Base                 7. Pages
+ * 4. Layout               8. Responsive
+ */
+
+/* 1. Brand variables ======================================================= */
+
+:root {
+  /* Brand_Palette. charts.js reads --hs-maroon, --hs-gold, --hs-green, and --hs-sand for the chart series. */
+  --hs-maroon: #6B1A1A;       /* primary */
+  --hs-gold: #C8943E;         /* accent */
+  --hs-cream: #FBF3EA;        /* tint for secondary surfaces */
+  --hs-sand: #D4B896;         /* borders */
+  --hs-green: #2D4A2D;        /* success */
+
+  /* Helper colors */
+  --hs-maroon-dark: #521414;  /* Maroon hover and active state */
+  --hs-page-bg: #F4F5F7;      /* light gray page background */
+  --hs-text-muted: #5C636A;   /* secondary text: 6.09:1 on white, 5.54:1 on Cream, 5.58:1 on the page gray */
+  --hs-red: #B02A37;          /* Rejected and Suspended badges, error text */
+  --hs-amber: #FFC107;        /* Pending badge */
+  --hs-gray: #6C757D;         /* Archived badge background (never used as text) */
+  --hs-white: #FFFFFF;
+  --hs-text: #212529;         /* dark text on amber, Gold, and light gray */
+  --hs-chip-bg: #E9ECEF;      /* inactive Pill_Chip */
+  --hs-green-dark: #243B24;   /* Deep Green hover and active state */
+
+  /* The same colors as "r, g, b" lists, for rgba() and Bootstrap's *-rgb variables */
+  --hs-maroon-rgb: 107, 26, 26;
+  --hs-maroon-dark-rgb: 82, 20, 20;
+  --hs-green-rgb: 45, 74, 45;
+  --hs-green-dark-rgb: 36, 59, 36;
+  --hs-red-rgb: 176, 42, 55;
+  --hs-text-muted-rgb: 92, 99, 106;
+
+  /* Sizes and effects */
+  --hs-topbar-height: 4rem;
+  --hs-sidebar-width: 250px;
+  --hs-radius: 1rem;
+  --hs-shadow: 0 2px 12px rgba(0, 0, 0, .06);
+  --hs-focus-ring: 0 0 0 .25rem rgba(var(--hs-maroon-rgb), .25);
+}
+
+/* 2. Bootstrap overrides =================================================== */
+/* Bootstrap 5.3 hard-codes the primary and success colors inside each component, so changing
+   --bs-primary alone is not enough. The root variables recolor links and the color utilities
+   (.text-primary, .bg-primary, .border-primary, .text-bg-primary, .link-primary, and their success
+   versions all read --bs-primary-rgb or --bs-success-rgb); the component rules below recolor the rest. */
+
+:root,
+[data-bs-theme=light] {
+  --bs-primary: var(--hs-maroon);
+  --bs-primary-rgb: var(--hs-maroon-rgb);
+  --bs-primary-text-emphasis: #2B0A0A;   /* Maroon shaded 60% */
+  --bs-primary-bg-subtle: #E1D1D1;       /* Maroon tinted 80% */
+  --bs-primary-border-subtle: #C4A3A3;   /* Maroon tinted 60% */
+
+  --bs-success: var(--hs-green);
+  --bs-success-rgb: var(--hs-green-rgb);
+  --bs-success-text-emphasis: #121E12;   /* Deep Green shaded 60%: 12.23:1 on the success alert background */
+  --bs-success-bg-subtle: #D5DBD5;       /* Deep Green tinted 80% */
+  --bs-success-border-subtle: #ABB7AB;   /* Deep Green tinted 60% */
+  --bs-form-valid-color: var(--hs-green);
+  --bs-form-valid-border-color: var(--hs-green);
+
+  --bs-link-color: var(--hs-maroon);
+  --bs-link-color-rgb: var(--hs-maroon-rgb);
+  --bs-link-hover-color: var(--hs-maroon-dark);
+  --bs-link-hover-color-rgb: var(--hs-maroon-dark-rgb);
+
+  --bs-focus-ring-color: rgba(var(--hs-maroon-rgb), .25);
+
+  /* Contrast safety: Bootstrap's gray #6C757D and red #DC3545 fall below 4.5:1 on Cream and the
+     page gray, so secondary and danger text use the darker helper colors. */
+  --bs-secondary: var(--hs-text-muted);
+  --bs-secondary-rgb: var(--hs-text-muted-rgb);
+  --bs-danger: var(--hs-red);
+  --bs-danger-rgb: var(--hs-red-rgb);
+  --bs-form-invalid-color: var(--hs-red);
+  --bs-form-invalid-border-color: var(--hs-red);
+}
+
+/* Primary buttons: Maroon, darker Maroon on hover and press */
+.btn-primary {
+  --bs-btn-color: var(--hs-white);
+  --bs-btn-bg: var(--hs-maroon);
+  --bs-btn-border-color: var(--hs-maroon);
+  --bs-btn-hover-color: var(--hs-white);
+  --bs-btn-hover-bg: var(--hs-maroon-dark);
+  --bs-btn-hover-border-color: var(--hs-maroon-dark);
+  --bs-btn-focus-shadow-rgb: var(--hs-maroon-rgb);
+  --bs-btn-active-color: var(--hs-white);
+  --bs-btn-active-bg: var(--hs-maroon-dark);
+  --bs-btn-active-border-color: var(--hs-maroon-dark);
+  --bs-btn-disabled-color: var(--hs-white);
+  --bs-btn-disabled-bg: var(--hs-maroon);
+  --bs-btn-disabled-border-color: var(--hs-maroon);
+}
+
+/* Primary outline buttons: Maroon text and border, filled Maroon on hover */
+.btn-outline-primary {
+  --bs-btn-color: var(--hs-maroon);
+  --bs-btn-border-color: var(--hs-maroon);
+  --bs-btn-hover-color: var(--hs-white);
+  --bs-btn-hover-bg: var(--hs-maroon);
+  --bs-btn-hover-border-color: var(--hs-maroon);
+  --bs-btn-focus-shadow-rgb: var(--hs-maroon-rgb);
+  --bs-btn-active-color: var(--hs-white);
+  --bs-btn-active-bg: var(--hs-maroon-dark);
+  --bs-btn-active-border-color: var(--hs-maroon-dark);
+  --bs-btn-disabled-color: var(--hs-maroon);
+  --bs-btn-disabled-border-color: var(--hs-maroon);
+}
+
+/* Success buttons: Deep Green */
+.btn-success {
+  --bs-btn-color: var(--hs-white);
+  --bs-btn-bg: var(--hs-green);
+  --bs-btn-border-color: var(--hs-green);
+  --bs-btn-hover-color: var(--hs-white);
+  --bs-btn-hover-bg: var(--hs-green-dark);
+  --bs-btn-hover-border-color: var(--hs-green-dark);
+  --bs-btn-focus-shadow-rgb: var(--hs-green-rgb);
+  --bs-btn-active-color: var(--hs-white);
+  --bs-btn-active-bg: var(--hs-green-dark);
+  --bs-btn-active-border-color: var(--hs-green-dark);
+  --bs-btn-disabled-color: var(--hs-white);
+  --bs-btn-disabled-bg: var(--hs-green);
+  --bs-btn-disabled-border-color: var(--hs-green);
+}
+
+/* Success outline buttons: Deep Green text and border */
+.btn-outline-success {
+  --bs-btn-color: var(--hs-green);
+  --bs-btn-border-color: var(--hs-green);
+  --bs-btn-hover-color: var(--hs-white);
+  --bs-btn-hover-bg: var(--hs-green);
+  --bs-btn-hover-border-color: var(--hs-green);
+  --bs-btn-focus-shadow-rgb: var(--hs-green-rgb);
+  --bs-btn-active-color: var(--hs-white);
+  --bs-btn-active-bg: var(--hs-green-dark);
+  --bs-btn-active-border-color: var(--hs-green-dark);
+  --bs-btn-disabled-color: var(--hs-green);
+  --bs-btn-disabled-border-color: var(--hs-green);
+}
+
+/* Contrast safety: gray and red outline buttons keep at least 4.5:1 when they sit on the page gray */
+.btn-outline-secondary {
+  --bs-btn-color: var(--hs-text-muted);
+  --bs-btn-border-color: var(--hs-text-muted);
+  --bs-btn-hover-color: var(--hs-white);
+  --bs-btn-hover-bg: var(--hs-text-muted);
+  --bs-btn-hover-border-color: var(--hs-text-muted);
+  --bs-btn-focus-shadow-rgb: var(--hs-text-muted-rgb);
+  --bs-btn-active-color: var(--hs-white);
+  --bs-btn-active-bg: var(--hs-text-muted);
+  --bs-btn-active-border-color: var(--hs-text-muted);
+  --bs-btn-disabled-color: var(--hs-text-muted);
+  --bs-btn-disabled-border-color: var(--hs-text-muted);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--hs-red);
+  --bs-btn-border-color: var(--hs-red);
+  --bs-btn-hover-color: var(--hs-white);
+  --bs-btn-hover-bg: var(--hs-red);
+  --bs-btn-hover-border-color: var(--hs-red);
+  --bs-btn-focus-shadow-rgb: var(--hs-red-rgb);
+  --bs-btn-active-color: var(--hs-white);
+  --bs-btn-active-bg: var(--hs-red);
+  --bs-btn-active-border-color: var(--hs-red);
+  --bs-btn-disabled-color: var(--hs-red);
+  --bs-btn-disabled-border-color: var(--hs-red);
+}
+
+/* Link-styled buttons already use the Maroon link color; only the focus ring is hard-coded blue */
+.btn-link {
+  --bs-btn-focus-shadow-rgb: var(--hs-maroon-rgb);
+}
+
+/* Link utilities: Bootstrap hard-codes their hover colors */
+.link-primary:hover,
+.link-primary:focus {
+  color: rgba(var(--hs-maroon-dark-rgb), var(--bs-link-opacity, 1)) !important;
+  -webkit-text-decoration-color: rgba(var(--hs-maroon-dark-rgb), var(--bs-link-underline-opacity, 1)) !important;
+  text-decoration-color: rgba(var(--hs-maroon-dark-rgb), var(--bs-link-underline-opacity, 1)) !important;
+}
+
+.link-success:hover,
+.link-success:focus {
+  color: rgba(var(--hs-green-dark-rgb), var(--bs-link-opacity, 1)) !important;
+  -webkit-text-decoration-color: rgba(var(--hs-green-dark-rgb), var(--bs-link-underline-opacity, 1)) !important;
+  text-decoration-color: rgba(var(--hs-green-dark-rgb), var(--bs-link-underline-opacity, 1)) !important;
+}
+
+/* Form focus rings: Maroon border and ring */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--hs-maroon);
+  box-shadow: var(--hs-focus-ring);
+}
+
+/* Checked and indeterminate checkboxes: Maroon */
+.form-check-input:checked,
+.form-check-input[type=checkbox]:indeterminate {
+  background-color: var(--hs-maroon);
+  border-color: var(--hs-maroon);
+}
+
+/* Pagination: Maroon links, Cream hover, Maroon active page */
+.pagination {
+  --bs-pagination-color: var(--hs-maroon);
+  --bs-pagination-hover-color: var(--hs-maroon-dark);
+  --bs-pagination-hover-bg: var(--hs-cream);
+  --bs-pagination-focus-color: var(--hs-maroon-dark);
+  --bs-pagination-focus-bg: var(--hs-cream);
+  --bs-pagination-focus-box-shadow: var(--hs-focus-ring);
+  --bs-pagination-active-color: var(--hs-white);
+  --bs-pagination-active-bg: var(--hs-maroon);
+  --bs-pagination-active-border-color: var(--hs-maroon);
+}
+
+/* Nav pills (Claims and Reports tabs): Maroon active pill */
+.nav-pills {
+  --bs-nav-pills-link-active-color: var(--hs-white);
+  --bs-nav-pills-link-active-bg: var(--hs-maroon);
+}
+
+/* Remaining focus rings that Bootstrap hard-codes in blue */
+.nav-link:focus-visible {
+  box-shadow: var(--hs-focus-ring);
+}
+
+.btn-close {
+  --bs-btn-close-focus-shadow: var(--hs-focus-ring);
+}
+
+/* 3. Base ================================================================== */
+
+html {
+  /* Keeps focused elements and anchor targets clear of the sticky Top_Bar */
+  scroll-padding-top: calc(var(--hs-topbar-height) + 1rem);
+}
+
+body {
+  background-color: var(--hs-page-bg);
+  overflow-wrap: break-word;   /* long words wrap instead of widening the page */
+}
+
+/* Visible focus indicator on every keyboard-focused element (Maroon: 11.75:1 on white, 10.77:1 on
+   the page gray, 10.69:1 on Cream). !important beats Bootstrap's "outline: 0" on buttons, form
+   fields, nav links, and pagination links. */
+:focus-visible {
+  outline: 3px solid var(--hs-maroon) !important;
+  outline-offset: 2px !important;
+}
+
+/* Regions that only receive focus from script (main after the skip link, modals, the offcanvas
+   Sidebar) get no outline around the whole region. */
+[tabindex="-1"]:focus-visible {
+  outline: 0 !important;
+}
+
+/* "Skip to main content": hidden above the screen (and by .visually-hidden-focusable) until focused */
+.hs-skip-link {
+  position: fixed;
+  top: .5rem;
+  left: .5rem;
+  z-index: 1100;
+  padding: .5rem 1rem;
+  font-weight: 600;
+  color: var(--hs-white);
+  text-decoration: none;
+  background-color: var(--hs-maroon);
+  border-radius: .5rem;
+  transform: translateY(-200%);
+}
+
+.hs-skip-link:focus {
+  color: var(--hs-white);
+  transform: none;
+}
+
+/* Reduced motion: transitions and animations finish at once */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: .01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* 4. Layout ================================================================ */
+
+/* Both layouts: Top_Bar, content, then the Footer at the bottom of short pages */
+.hs-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Top_Bar: white, Sand bottom border, stays at the top while the page scrolls */
+.hs-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-height: var(--hs-topbar-height);
+  padding: .5rem 1.5rem;
+  background-color: var(--hs-white);
+  border-bottom: 1px solid var(--hs-sand);
+}
+
+/* Menu toggle button (shown below 992px through d-lg-none) */
+.hs-menu-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--hs-maroon);
+  background-color: var(--hs-white);
+  border: 1px solid var(--hs-sand);
+  border-radius: .5rem;
+}
+
+.hs-menu-toggle:hover {
+  color: var(--hs-maroon-dark);
+  background-color: var(--hs-cream);
+}
+
+/* Brand: logo and the name "HeronSearch" */
+.hs-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--hs-maroon);
+  text-decoration: none;
+}
+
+.hs-brand:hover {
+  color: var(--hs-maroon-dark);
+}
+
+.hs-brand-logo {
+  width: auto;
+  height: 2.5rem;
+}
+
+/* Signed-in user's full name and role, pushed to the right; long names wrap */
+.hs-user {
+  min-width: 0;
+  margin-left: auto;
+  line-height: 1.25;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.hs-user-name {
+  display: block;
+  font-weight: 600;
+}
+
+.hs-user-role {
+  display: block;
+  font-size: .875rem;
+  color: var(--hs-text-muted);
+}
+
+/* Shell: the Sidebar next to the main content area */
+.hs-shell {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Sidebar: <nav id="sidebar" class="hs-sidebar offcanvas-lg offcanvas-start">, a drawer below 992px */
+.hs-sidebar {
+  --bs-offcanvas-width: 280px;
+  --bs-offcanvas-border-color: var(--hs-sand);
+}
+
+/* White at every width; Bootstrap makes .offcanvas-lg transparent from 992px */
+.hs-sidebar.offcanvas-lg {
+  background-color: var(--hs-white) !important;
+}
+
+.hs-sidebar .offcanvas-header {
+  border-bottom: 1px solid var(--hs-sand);
+}
+
+.hs-sidebar .offcanvas-title {
+  font-weight: 700;
+  color: var(--hs-maroon);
+}
+
+.hs-sidebar .offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  gap: .375rem;
+  padding: 1rem .75rem;
+}
+
+.hs-sidebar .nav {
+  --bs-nav-link-color: var(--hs-text);
+  --bs-nav-link-hover-color: var(--hs-maroon);
+  --bs-nav-link-padding-x: 1rem;
+  --bs-nav-link-padding-y: .625rem;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: .375rem;
+}
+
+/* Links and the Logout button share one look: icon, dark text, and a hidden left bar */
+.hs-sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
+  font-weight: 500;
+  text-align: left;
+  border-left: 4px solid transparent;
+  border-radius: 0 .5rem .5rem 0;
+}
+
+.hs-sidebar .nav-link .bi {
+  flex: 0 0 auto;
+  font-size: 1.125rem;
+}
+
+/* Hover and the current section: Cream background, Maroon text, and the Maroon left bar */
+.hs-sidebar .nav-link:hover,
+.hs-sidebar .nav-link.active,
+.hs-sidebar .nav-link[aria-current="page"] {
+  color: var(--hs-maroon);
+  background-color: var(--hs-cream);
+  border-left-color: var(--hs-maroon);
+}
+
+.hs-sidebar .nav-link.active,
+.hs-sidebar .nav-link[aria-current="page"] {
+  font-weight: 600;
+}
+
+/* From 992px the Sidebar is a static 250px column with a Sand right border */
+@media (min-width: 992px) {
+  .hs-sidebar {
+    flex: 0 0 var(--hs-sidebar-width);
+    width: var(--hs-sidebar-width);
+    border-right: 1px solid var(--hs-sand);
+  }
+
+  /* The link list stays in view while the main content scrolls */
+  .hs-sidebar .offcanvas-body {
+    position: sticky;
+    top: var(--hs-topbar-height);
+  }
+}
+
+/* Main content area; min-width: 0 lets wide tables scroll inside .table-responsive */
+.hs-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 1.5rem;
+}
+
+/* Minimal_Layout main: the page content centered between the Top_Bar and the Footer */
+.hs-minimal-main {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 1rem;
+}
+
+/* Footer */
+.hs-footer {
+  padding: 1rem 1.5rem;
+  font-size: .875rem;
+  color: var(--hs-text-muted);
+  text-align: center;
+  background-color: var(--hs-white);
+  border-top: 1px solid var(--hs-sand);
+}
+
+/* 5. Components ============================================================ */
+
+/* Card: white, rounded corners, Sand border, soft shadow */
+.hs-card {
+  padding: 1.25rem;
+  background-color: var(--hs-white);
+  border: 1px solid var(--hs-sand);
+  border-radius: var(--hs-radius);
+  box-shadow: var(--hs-shadow);
+}
+
+.hs-card > :last-child {
+  margin-bottom: 0;
+}
+
+/* Card title row: title on the left, an optional link or button on the right */
+.hs-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.hs-card-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Page heading row: title on the left, the main action button on the right */
+.hs-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hs-page-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--hs-maroon);
+}
+
+/* Data table (with .table, inside .table-responsive): Sand borders, Cream header row */
+.hs-table {
+  --bs-table-border-color: var(--hs-sand);
+  --bs-table-hover-bg: var(--hs-cream);
+  margin-bottom: 0;
+}
+
+.hs-table > thead {
+  --bs-table-bg: var(--hs-cream);
+}
+
+.hs-table > thead th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.hs-table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+
+/* Search: rounded pill input with the bi-search icon inside it */
+.hs-search {
+  position: relative;
+}
+
+.hs-search > .bi,
+.hs-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  color: var(--hs-text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.hs-search .form-control {
+  padding-left: 2.75rem;
+  border-radius: 50rem;
+}
+
+/* Pill_Chips: light gray with dark text; the active chip is Maroon with white text */
+.hs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.hs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  padding: .375rem 1rem;
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--hs-text);
+  text-decoration: none;
+  background-color: var(--hs-chip-bg);
+  border: 1px solid transparent;
+  border-radius: 50rem;
+}
+
+.hs-chip:hover {
+  color: var(--hs-maroon);
+  background-color: var(--hs-cream);
+  border-color: var(--hs-sand);
+}
+
+.hs-chip.active,
+.hs-chip[aria-current="true"] {
+  color: var(--hs-white);
+  background-color: var(--hs-maroon);
+  border-color: var(--hs-maroon);
+}
+
+.hs-chip.active:hover,
+.hs-chip[aria-current="true"]:hover {
+  color: var(--hs-white);
+  background-color: var(--hs-maroon-dark);
+  border-color: var(--hs-maroon-dark);
+}
+
+/* Password field: the show/hide toggle sits inside the right end of the input */
+.hs-password {
+  position: relative;
+}
+
+.hs-password .form-control {
+  padding-right: 3rem;
+}
+
+/* Hide Microsoft Edge's built-in reveal button so only one eye icon shows */
+.hs-password .form-control::-ms-reveal {
+  display: none;
+}
+
+.hs-password-toggle,
+.hs-password [data-password-toggle] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: calc(1.5em + .75rem + 2 * var(--bs-border-width));
+  padding: 0;
+  color: var(--hs-text-muted);
+  background-color: transparent;
+  border: 0;
+  border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0;
+}
+
+.hs-password-toggle:hover,
+.hs-password [data-password-toggle]:hover {
+  color: var(--hs-maroon);
+}
+
+/* Fields that failed validation (ASP.NET adds input-validation-error) keep a red border */
+.form-control.input-validation-error,
+.form-select.input-validation-error {
+  border-color: var(--hs-red);
+}
+
+/* Stat card (use with .hs-card): Cream icon tile, big number, muted label */
+.hs-stat {
+  display: flex;
+  align-items: center;
+  gap: .875rem;
+  height: 100%;
+}
+
+.hs-stat-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.375rem;
+  color: var(--hs-maroon);
+  background-color: var(--hs-cream);
+  border-radius: .75rem;
+}
+
+.hs-stat-body {
+  min-width: 0;
+}
+
+.hs-stat-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hs-stat-label {
+  display: block;
+  margin: 0;
+  font-size: .875rem;
+  color: var(--hs-text-muted);
+}
+
+/* Item photo thumbnail (48px in tables); .hs-thumb-lg for the details modal, Edit, and Review */
+.hs-thumb {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  background-color: var(--hs-cream);
+  border: 1px solid var(--hs-sand);
+  border-radius: .5rem;
+}
+
+.hs-thumb-lg {
+  width: 100%;
+  max-width: 20rem;
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+/* No-photo placeholder (use with .hs-thumb): Cream box with the Maroon category icon */
+.hs-thumb-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--hs-maroon);
+}
+
+.hs-thumb-placeholder.hs-thumb-lg {
+  font-size: 3rem;
+}
+
+/* Empty_State: centered icon and a short sentence in place of a list, table, or chart */
+.hs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: 2.5rem 1rem;
+  color: var(--hs-text-muted);
+  text-align: center;
+}
+
+.hs-empty > .bi,
+.hs-empty-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--hs-maroon);
+}
+
+.hs-empty p {
+  margin: 0;
+}
+
+/* Chart box: fixed height, so Chart.js (responsive, no fixed aspect ratio) fills it */
+.hs-chart-box {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+/* 6. Status badges ========================================================= */
+/* _StatusBadge renders <span class="badge rounded-pill hs-badge-...">Name</span>; the class comes
+   from DisplayFormat.StatusBadgeClass. Text/background contrast: Pending 9.46:1, green 9.86:1,
+   red 6.50:1, Active 11.75:1, Claimed 5.70:1, Archived 4.69:1. */
+
+.hs-badge-pending {
+  color: var(--hs-text);
+  background-color: var(--hs-amber);
+}
+
+.hs-badge-approved,
+.hs-badge-returned,
+.hs-badge-verified {
+  color: var(--hs-white);
+  background-color: var(--hs-green);
+}
+
+.hs-badge-rejected,
+.hs-badge-suspended {
+  color: var(--hs-white);
+  background-color: var(--hs-red);
+}
+
+.hs-badge-active {
+  color: var(--hs-white);
+  background-color: var(--hs-maroon);
+}
+
+.hs-badge-claimed {
+  color: var(--hs-text);
+  background-color: var(--hs-gold);
+}
+
+.hs-badge-archived {
+  color: var(--hs-white);
+  background-color: var(--hs-gray);
+}
+
+/* 7. Pages ================================================================= */
+
+/* Login card (also used by the Signed_Out_Page), centered by .hs-minimal-main; use with .hs-card */
+.hs-login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+}
+
+.hs-login-logo {
+  display: block;
+  width: auto;
+  height: 6rem;
+  margin: 0 auto 1rem;
+}
+
+/* Phase 2 adds the claim review two-column layout and the About page tiles here. */
+
+/* 8. Responsive ============================================================ */
+/* Below 992px the Sidebar is Bootstrap's offcanvas drawer, opened by .hs-menu-toggle, and the main
+   area takes the full width. Stat cards and charts stack through the grid classes in the views.
+   Wide tables scroll inside .table-responsive, so no page scrolls sideways at 360px. */
+
+/* Pagination wraps instead of pushing the page wider than the screen */
+.pagination {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 991.98px) {
+  .hs-topbar {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+/* Phones (360px and up): tighter spacing */
+@media (max-width: 575.98px) {
+  .hs-topbar {
+    gap: .5rem;
+    padding: .5rem .75rem;
+  }
+
+  .hs-brand {
+    font-size: 1.125rem;
+  }
+
+  .hs-brand-logo {
+    height: 2.25rem;
+  }
+
+  .hs-user-name,
+  .hs-user-role {
+    font-size: .8125rem;
+  }
+
+  .hs-main {
+    padding: 1rem .75rem;
+  }
+
+  .hs-page-title {
+    font-size: 1.5rem;
+  }
+
+  .hs-card {
+    padding: 1rem;
+  }
+
+  .hs-login-card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+/* From 1200px the five Dashboard stat cards share one row, so the icon sits above the number */
+@media (min-width: 1200px) {
+  .hs-stat {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ===== Phase 2 ===== */
+
+/* Pill tabs used by Manage Claims and Reports / History. */
+.hs-tabs {
+    gap: .5rem;
+}
+
+.hs-tabs .nav-link {
+    color: var(--hs-maroon, #6b1a1a);
+    background: transparent;
+    border: 1px solid rgba(107, 26, 26, .25);
+}
+
+.hs-tabs .nav-link.active {
+    color: #fff;
+    background: var(--hs-maroon, #6b1a1a);
+    border-color: var(--hs-maroon, #6b1a1a);
+}
+
+/* The two-column item/claimant layout on the claim Review page. On narrow screens the cards stack. */
+.hs-review .hs-card {
+    height: 100%;
+}
+
+/* About page feature and role tiles. */
+.hs-about-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.hs-about-tile {
+    display: flex;
+    gap: .75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: .75rem;
+    background: #fff;
+}
+
+.hs-about-tile .hs-about-icon {
+    font-size: 1.5rem;
+    color: var(--hs-maroon, #6b1a1a);
+    line-height: 1;
+}
+
+.hs-about-tile h3 {
+    font-size: 1rem;
+    margin: 0 0 .25rem;
+}
+
+.hs-about-tile p {
+    margin: 0;
+    color: #555;
+}
+
+/* The logo-meaning list on the About page. */
+.hs-about-meaning {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hs-about-meaning li {
+    margin-bottom: .5rem;
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HeronSearch mark: the open box is the keeper of lost things, the light is the guide, the heart is compassion, and the arch is unity and a safe space. -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="120" height="160" viewBox="0 0 120 160" role="img" aria-labelledby="hs-logo-title">
+  <title id="hs-logo-title">HeronSearch</title>
+  <path d="M23 139V76A37 37 0 0 1 97 76V139" fill="none" stroke="#6B1A1A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 11.5V5.5M67.9 14.1L71.5 9.2M52.1 14.1L48.5 9.2M72.8 20.8L78.5 19M47.2 20.8L41.5 19" fill="none" stroke="#C8943E" stroke-width="5" stroke-linecap="round"/>
+  <path d="M60 16Q61.5 23.5 69 25Q61.5 26.5 60 34Q58.5 26.5 51 25Q58.5 23.5 60 16Z" fill="#C8943E"/>
+  <path d="M53 105L42 94A12.728 12.728 0 0 1 60 76A12.728 12.728 0 0 1 78 94L67 105Z" fill="#6B1A1A"/>
+  <path d="M33 98L40 105V135H80V105L87 98M40 105H80" fill="none" stroke="#6B1A1A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 147A155 155 0 0 0 106 147" fill="none" stroke="#C8943E" stroke-width="6" stroke-linecap="round"/>
+</svg>

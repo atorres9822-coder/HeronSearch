@@ -1,0 +1,14 @@
+@* Bad_Request_Page: tells the visitor the request could not be processed and links back to the Dashboard. *@
+@{
+    ViewData["Title"] = "Bad request";
+    // Signed-in visitors see the full admin shell; signed-out visitors see the minimal shell.
+    Layout = (User.Identity?.IsAuthenticated ?? false) ? "_Layout" : "_MinimalLayout";
+}
+<div class="hs-empty">
+    <i class="bi bi-exclamation-circle hs-empty-icon" aria-hidden="true"></i>
+    <h1 class="hs-page-title">Bad request</h1>
+    <p>Your request couldn't be processed. Please go back and try again.</p>
+    <p>
+        <a class="btn btn-primary" href="@Url.Content("~/")">Go to Dashboard</a>
+    </p>
+</div>

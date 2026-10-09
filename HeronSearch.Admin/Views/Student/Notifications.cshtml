@@ -1,0 +1,37 @@
+@* Notifications: the student's reviewed claims (Approved or Rejected) as friendly messages, newest first.
+   Derived from the Claims table at read time; nothing is stored in the database. *@
+@model StudentNotificationsViewModel
+@{
+    ViewData["Title"] = "Notifications";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Notifications</h1>
+        <p>Updates on your claims.</p>
+    </div>
+
+    <section class="dash-section">
+        @if (Model.Rows.Count == 0)
+        {
+            <div class="hs-card">
+                <partial name="_EmptyState" model="@(("bi-bell", "You have no notifications yet.", (string?)null, (string?)null))" />
+            </div>
+        }
+        else
+        {
+            <div class="hs-card">
+                <ul class="student-activity">
+                    @foreach (var row in Model.Rows)
+                    {
+                        <li>
+                            <i class="bi @(row.Status == ClaimStatus.Approved ? "bi-check-circle" : "bi-x-circle")" aria-hidden="true"></i>
+                            <span class="student-activity-msg">@row.Message</span>
+                            <span class="student-activity-when">@DisplayFormat.ShortDate(row.ReviewedAt)</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </section>
+</div>

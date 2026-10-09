@@ -1,0 +1,68 @@
+@* Reports / History: the From/To date range form (with the range error), the Overview and System Logs tabs,
+   and the active tab's partial. Chart.js and charts.js load in the Scripts section (Req 22.1, 22.2, 22.8, 23.1). *@
+@model ReportsViewModel
+@{
+    ViewData["Title"] = "Reports / History";
+
+    var fromText = Model.From.ToString("yyyy-MM-dd");
+    var toText = Model.To.ToString("yyyy-MM-dd");
+
+    // The tabs, in display order; each keeps the current date range.
+    var tabs = new (string Key, string Label)[] { ("overview", "Overview"), ("logs", "System Logs") };
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Reports / History</h1>
+</div>
+
+@* GET date-range form; it keeps the active tab so switching dates stays on the same tab. *@
+<div class="hs-card mb-4">
+    <form method="get" asp-controller="Reports" asp-action="Index">
+        <input type="hidden" name="tab" value="@Model.Tab" />
+        <div class="row g-3 align-items-end">
+            <div class="col-6 col-lg-3">
+                <label for="from" class="form-label">From</label>
+                <input type="date" class="form-control" id="from" name="from" value="@fromText" />
+            </div>
+            <div class="col-6 col-lg-3">
+                <label for="to" class="form-label">To</label>
+                <input type="date" class="form-control" id="to" name="to" value="@toText" />
+            </div>
+            <div class="col-12 col-lg-3 d-grid">
+                <button type="submit" class="btn btn-primary">Apply range</button>
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.RangeError))
+        {
+            <div class="text-danger mt-2" role="alert">@Model.RangeError</div>
+        }
+    </form>
+</div>
+
+@* Tabs: Overview and System Logs, each a GET link that keeps the date range. *@
+<ul class="nav nav-pills hs-tabs mb-4" role="tablist">
+    @foreach (var tab in tabs)
+    {
+        var isActive = Model.Tab == tab.Key;
+        <li class="nav-item" role="presentation">
+            <a class="nav-link @(isActive ? "active" : null)"
+               asp-controller="Reports" asp-action="Index"
+               asp-route-tab="@tab.Key" asp-route-from="@fromText" asp-route-to="@toText"
+               aria-current="@(isActive ? "page" : null)">@tab.Label</a>
+        </li>
+    }
+</ul>
+
+@if (Model.Tab == "logs")
+{
+    <partial name="_Logs" model="Model" />
+}
+else
+{
+    <partial name="_Overview" model="Model" />
+}
+
+@section Scripts {
+    <script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
+    <script src="~/js/charts.js"></script>
+}

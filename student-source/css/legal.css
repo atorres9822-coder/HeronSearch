@@ -1,0 +1,15 @@
+body { background: #fff; }
+
+.legal { max-width: 720px; margin: 0 auto; padding: 56px 24px 64px; }
+.legal h1 { font-size: 32px; font-weight: 700; }
+.legal .intro { margin-top: 12px; color: var(--muted); line-height: 1.6; }
+
+.legal section { margin-top: 32px; }
+.legal h2 { margin-bottom: 10px; font-size: 18px; font-weight: 600; }
+.legal p, .legal li { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.legal ul { padding-left: 20px; }
+.legal a { color: var(--blue); }
+
+@media (max-width: 800px) {
+  .legal h1 { font-size: 26px; }
+}

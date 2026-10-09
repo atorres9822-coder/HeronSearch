@@ -1,0 +1,11 @@
+@* Empty state: a centered icon and a short sentence shown in place of a list, table, or chart,
+   with an optional link such as "Clear filters" (Requirement 10.3). Icon is a Bootstrap Icons class. *@
+@model (string Icon, string Message, string? LinkText, string? LinkUrl)
+<div class="hs-empty">
+    <i class="bi @Model.Icon hs-empty-icon" aria-hidden="true"></i>
+    <p>@Model.Message</p>
+    @if (!string.IsNullOrWhiteSpace(Model.LinkText) && !string.IsNullOrWhiteSpace(Model.LinkUrl))
+    {
+        <a href="@Model.LinkUrl">@Model.LinkText</a>
+    }
+</div>

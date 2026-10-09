@@ -1,0 +1,58 @@
+@* Item Details: a read-only view of one Active item (photo, type, category, location, date, description).
+   Found items show a "Claim this item" button that links to /Student/Claim/{id} (built in Wave 3). *@
+@using System.Security.Claims
+@model StudentItemDetailsViewModel
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "_StudentLayout";
+
+    // The signed-in student's Id, read from the NameIdentifier claim; used to hide the Claim button on own reports.
+    var currentUserId = 0;
+    int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out currentUserId);
+    var isOwnReport = Model.ReportedByUserId == currentUserId;
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>@Model.Name</h1>
+        <p>Reported @DisplayFormat.ShortDate(Model.DateReported)</p>
+    </div>
+
+    <section class="dash-section">
+        <div class="hs-card">
+            <div class="row g-4">
+                <div class="col-12 col-md-5">
+                    <partial name="_ItemPhoto" model="@((Model.ImagePath, Model.Category, "lg"))" />
+                </div>
+                <div class="col-12 col-md-7">
+                    <p class="mb-2">
+                        <span class="badge rounded-pill @DisplayFormat.StatusBadgeClass("Active")">Active</span>
+                        <span class="hs-chip">@Model.Type</span>
+                    </p>
+                    <dl class="row mb-0">
+                        <dt class="col-4">Category</dt>
+                        <dd class="col-8">@Model.Category</dd>
+                        <dt class="col-4">Location</dt>
+                        <dd class="col-8">@Model.Location</dd>
+                        <dt class="col-4">Date</dt>
+                        <dd class="col-8">@DisplayFormat.ShortDate(Model.DateReported)</dd>
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <dt class="col-4">Description</dt>
+                            <dd class="col-8">@Model.Description</dd>
+                        }
+                    </dl>
+
+                    <div class="d-flex gap-2 mt-4">
+                        @if (Model.Type == ItemType.Found && !isOwnReport)
+                        {
+                            <a asp-controller="Student" asp-action="Claim" asp-route-id="@Model.Id" class="btn btn-primary">Claim this item</a>
+                        }
+                        <a class="btn btn-outline-secondary"
+                           asp-controller="Student"
+                           asp-action="@(Model.Type == ItemType.Found ? "FoundItems" : "LostItems")">Back to list</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,201 @@
+@* Manage Items list: the "+ Add Found Item" action, the GET search/filter form (search box, status
+   Pill_Chips, Category and Type selects), the items table with a View (details modal) and Edit action
+   per row, the pager, and the "Clear filters" empty state (Requirements 12.1-12.4, 12.7, 12.13, 13.1). *@
+@model ItemListViewModel
+@{
+    ViewData["Title"] = "Manage Items";
+
+    // The status chips: the "All" chip plus one per ItemStatus value. The active chip is the one whose
+    // value matches the current Status filter (null means "All"), and it keeps the other filters.
+    var statusNames = Enum.GetNames<ItemStatus>();
+
+    // Builds the route values for a status chip link so the search term and the Category/Type filters stay.
+    Func<string?, Dictionary<string, string?>> chipRoute = statusValue => new Dictionary<string, string?>
+    {
+        ["search"] = Model.Search,
+        ["status"] = statusValue,
+        ["category"] = Model.Category,
+        ["type"] = Model.Type
+    };
+}
+
+@* Heading row: the page title on the left and the rounded "+ Add Found Item" button on the right. *@
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Manage Items</h1>
+    <a class="btn btn-primary rounded-pill" asp-controller="Items" asp-action="Create">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Found Item
+    </a>
+</div>
+
+@* GET filter form: a search box, the status chips, and the Category and Type selects. It submits with
+   GET so the filters live in the query string and carries no anti-forgery token (GET changes nothing). *@
+<div class="hs-card mb-4">
+    <form method="get" asp-controller="Items" asp-action="Index" role="search">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-lg-5">
+                <label for="search" class="visually-hidden">Search items</label>
+                <div class="hs-search">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input type="search" class="form-control" id="search" name="search"
+                           value="@Model.Search" placeholder="Search name, description, or location" />
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="">All categories</option>
+                    @foreach (var categoryName in ItemLists.Categories)
+                    {
+                        <option value="@categoryName" selected="@(categoryName == Model.Category)">@categoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-6 col-lg-3">
+                <label for="type" class="form-label">Type</label>
+                <select class="form-select" id="type" name="type">
+                    <option value="">All types</option>
+                    @foreach (var typeName in Enum.GetNames<ItemType>())
+                    {
+                        <option value="@typeName" selected="@(typeName == Model.Type)">@typeName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        @* Status Pill_Chips: the active chip gets aria-current="true"; each chip is a GET link that keeps
+           the search term and the Category and Type filters. "All" clears only the Status filter. *@
+        <div class="hs-chips mt-3" role="group" aria-label="Filter by status">
+            <a class="hs-chip" asp-controller="Items" asp-action="Index"
+               asp-all-route-data="@chipRoute(null)"
+               aria-current="@(Model.Status == null ? "true" : null)">All</a>
+            @foreach (var statusName in statusNames)
+            {
+                <a class="hs-chip" asp-controller="Items" asp-action="Index"
+                   asp-all-route-data="@chipRoute(statusName)"
+                   aria-current="@(Model.Status == statusName ? "true" : null)">@statusName</a>
+            }
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
+</div>
+
+@* The item list itself: the table when there are rows, otherwise the "Clear filters" empty state. *@
+@if (Model.Rows.Count == 0)
+{
+    <div class="hs-card">
+        <partial name="_EmptyState" model="@(("bi-search", "No items match your filters.", (string?)"Clear filters", (string?)"/Items"))" />
+    </div>
+}
+else
+{
+    <div class="hs-card">
+        <div class="table-responsive">
+            <table class="table hs-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Reporter</th>
+                        <th scope="col"><span class="visually-hidden">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td><partial name="_ItemPhoto" model="@((row.ImagePath, row.Category, "sm"))" /></td>
+                            <td>@row.Name</td>
+                            <td>@row.Category</td>
+                            <td>@row.Location</td>
+                            <td>@DisplayFormat.ShortDate(row.DateReported)</td>
+                            <td>@row.Type</td>
+                            <td><partial name="_StatusBadge" model="@row.Status.ToString()" /></td>
+                            <td>@row.ReporterName</td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    @* View opens this row's details modal; Edit links to the edit form. *@
+                                    <button type="button" class="btn btn-outline-secondary"
+                                            data-bs-toggle="modal" data-bs-target="#itemDetails-@row.Id"
+                                            aria-label="View @row.Name">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </button>
+                                    <a class="btn btn-outline-secondary" asp-controller="Items" asp-action="Edit"
+                                       asp-route-id="@row.Id" aria-label="Edit @row.Name">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+
+                                    @* Mark as Returned (shown only when the status allows it): opens the shared
+                                       confirm modal, which posts to /Items/MarkReturned/{id} with the hidden
+                                       returnUrl that keeps the current filters and page (Requirements 15.1, 10.4). *@
+                                    @if (row.CanMarkReturned)
+                                    {
+                                        <button type="button" class="btn btn-outline-success"
+                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-confirm-action="/Items/MarkReturned/@row.Id"
+                                                data-confirm-title="Mark as Returned"
+                                                data-confirm-message="Mark '@row.Name' as returned?"
+                                                data-confirm-button="Mark as Returned"
+                                                data-confirm-variant="success"
+                                                aria-label="Mark @row.Name as returned">
+                                            <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                        </button>
+                                    }
+
+                                    @* Archive (shown only when the status allows it): opens the shared confirm
+                                       modal, which posts to /Items/Archive/{id} (Requirements 15.3, 10.4). *@
+                                    @if (row.CanArchive)
+                                    {
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-confirm-action="/Items/Archive/@row.Id"
+                                                data-confirm-title="Archive item"
+                                                data-confirm-message="Archive '@row.Name'?"
+                                                data-confirm-button="Archive"
+                                                data-confirm-variant="warning"
+                                                aria-label="Archive @row.Name">
+                                            <i class="bi bi-archive" aria-hidden="true"></i>
+                                        </button>
+                                    }
+
+                                    @* Delete (Admins only): opens the shared confirm modal, which posts to
+                                       /Items/Delete/{id}. The confirm text matches Requirement 16.2 exactly. *@
+                                    @if (Model.IsAdmin)
+                                    {
+                                        <button type="button" class="btn btn-outline-danger"
+                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-confirm-action="/Items/Delete/@row.Id"
+                                                data-confirm-title="Delete item"
+                                                data-confirm-message="Delete '@row.Name'? This cannot be undone."
+                                                data-confirm-button="Delete"
+                                                data-confirm-variant="danger"
+                                                aria-label="Delete @row.Name">
+                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3">
+            <partial name="_Pager" model="Model.Pager" />
+        </div>
+    </div>
+
+    @* One details modal per row, filled from the row's own data and opened by that row's View button. *@
+    @foreach (var row in Model.Rows)
+    {
+        <partial name="_ItemDetailsModal" model="row" />
+    }
+}

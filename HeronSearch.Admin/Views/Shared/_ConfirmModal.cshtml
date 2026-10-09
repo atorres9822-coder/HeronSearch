@@ -1,0 +1,30 @@
+@* Shared confirmation dialog, rendered once by the admin layout. Each trigger supplies its own
+   title, message, action, and button text through data-confirm-* attributes; site.js copies those
+   into this modal when it opens and sets the form's action. The form posts with the anti-forgery
+   token and a hidden returnUrl so the controller can send the user back to the current list. *@
+@{
+    // Default returnUrl: the current path and query, used until a trigger overrides it.
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString;
+}
+<div class="modal fade" id="confirmModal" tabindex="-1"
+     aria-labelledby="confirmModalTitle" aria-describedby="confirmModalMessage">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="confirmModalTitle">Confirm</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" id="confirmModalMessage">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" id="confirmModalForm" asp-antiforgery="true">
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn btn-primary" id="confirmModalSubmit">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

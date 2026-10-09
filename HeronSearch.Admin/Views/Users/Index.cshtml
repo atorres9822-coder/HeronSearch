@@ -1,0 +1,174 @@
+@* Manage Users list: the "+ Add Staff Account" action, the search/status/role filter form, the users table
+   with per-row Verify, Suspend, Change role, and Delete actions, the empty state, and the pager. The signed-in
+   Admin's own row shows "(you)" and hides Suspend, Change role, and Delete (Req 20.1-20.5, 21.1, 21.4, I15). *@
+@model UserListViewModel
+@{
+    ViewData["Title"] = "Manage Users";
+
+    var statusNames = Enum.GetNames<VerificationStatus>();
+
+    // Builds the status-chip route values so the search term and the role filter stay.
+    Func<string?, Dictionary<string, string?>> chipRoute = statusValue => new Dictionary<string, string?>
+    {
+        ["search"] = Model.Search,
+        ["status"] = statusValue,
+        ["role"] = Model.Role
+    };
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Manage Users</h1>
+    <a class="btn btn-primary rounded-pill" asp-controller="Users" asp-action="Create">
+        <i class="bi bi-person-plus" aria-hidden="true"></i> Add Staff Account
+    </a>
+</div>
+
+@* GET filter form: search box, status Pill_Chips, and the role select. *@
+<div class="hs-card mb-4">
+    <form method="get" asp-controller="Users" asp-action="Index" role="search">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-lg-7">
+                <label for="search" class="visually-hidden">Search users</label>
+                <div class="hs-search">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input type="search" class="form-control" id="search" name="search"
+                           value="@Model.Search" placeholder="Search name, email, or ID" />
+                </div>
+            </div>
+            <div class="col-8 col-lg-3">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-select" id="role" name="role">
+                    <option value="">All roles</option>
+                    @foreach (var roleName in Enum.GetNames<UserRole>())
+                    {
+                        <option value="@roleName" selected="@(roleName == Model.Role)">@roleName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-4 col-lg-2 d-grid">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </div>
+
+        <div class="hs-chips mt-3" role="group" aria-label="Filter by status">
+            <a class="hs-chip" asp-controller="Users" asp-action="Index"
+               asp-all-route-data="@chipRoute(null)"
+               aria-current="@(Model.Status == null ? "true" : null)">All</a>
+            @foreach (var statusName in statusNames)
+            {
+                <a class="hs-chip" asp-controller="Users" asp-action="Index"
+                   asp-all-route-data="@chipRoute(statusName)"
+                   aria-current="@(Model.Status == statusName ? "true" : null)">@statusName</a>
+            }
+        </div>
+    </form>
+</div>
+
+@if (Model.Rows.Count == 0)
+{
+    <div class="hs-card">
+        <partial name="_EmptyState" model="@(("bi-people", "No users match your filters.", (string?)"Clear filters", (string?)"/Users"))" />
+    </div>
+}
+else
+{
+    <div class="hs-card">
+        <div class="table-responsive">
+            <table class="table hs-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Student ID</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Joined</th>
+                        <th scope="col"><span class="visually-hidden">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td>
+                                @row.FullName
+                                @if (row.IsSelf)
+                                {
+                                    <span class="text-body-secondary">(you)</span>
+                                }
+                            </td>
+                            <td>@row.Email</td>
+                            <td>@(string.IsNullOrWhiteSpace(row.StudentId) ? "—" : row.StudentId)</td>
+                            <td>@row.Role</td>
+                            <td><partial name="_StatusBadge" model="@row.VerificationStatus.ToString()" /></td>
+                            <td>@DisplayFormat.ShortDate(row.CreatedAt)</td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    @* Verify is shown whenever the status allows it. *@
+                                    @if (row.CanVerify)
+                                    {
+                                        <button type="button" class="btn btn-outline-success"
+                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-confirm-action="/Users/Verify/@row.Id"
+                                                data-confirm-title="Verify account"
+                                                data-confirm-message="Verify '@row.FullName'?"
+                                                data-confirm-button="Verify"
+                                                data-confirm-variant="success"
+                                                aria-label="Verify @row.FullName">
+                                            <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                        </button>
+                                    }
+
+                                    @* Suspend, Change role, and Delete are hidden on the signed-in Admin's own row (I15). *@
+                                    @if (row.CanSuspend)
+                                    {
+                                        <button type="button" class="btn btn-outline-warning"
+                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-confirm-action="/Users/Suspend/@row.Id"
+                                                data-confirm-title="Suspend account"
+                                                data-confirm-message="Suspend '@row.FullName'?"
+                                                data-confirm-button="Suspend"
+                                                data-confirm-variant="warning"
+                                                aria-label="Suspend @row.FullName">
+                                            <i class="bi bi-slash-circle" aria-hidden="true"></i>
+                                        </button>
+                                    }
+
+                                    @if (!row.IsSelf)
+                                    {
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                data-bs-toggle="modal" data-bs-target="#changeRoleModal"
+                                                data-action="/Users/ChangeRole"
+                                                data-current-role="@row.Role"
+                                                data-user-id="@row.Id"
+                                                aria-label="Change role of @row.FullName">
+                                            <i class="bi bi-person-gear" aria-hidden="true"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-outline-danger"
+                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-confirm-action="/Users/Delete/@row.Id"
+                                                data-confirm-title="Delete account"
+                                                data-confirm-message="Delete '@row.FullName'? This cannot be undone."
+                                                data-confirm-button="Delete"
+                                                data-confirm-variant="danger"
+                                                aria-label="Delete @row.FullName">
+                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3">
+            <partial name="_Pager" model="Model.Pager" />
+        </div>
+    </div>
+
+    @* One shared Change role modal; site.js points its form at the row's action and preselects the current role. *@
+    <partial name="_ChangeRoleModal" />
+}

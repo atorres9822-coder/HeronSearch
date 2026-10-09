@@ -1,0 +1,11 @@
+@* Signed-out page: shown after logout on the Minimal_Layout, with a link back to the sign-in page (Req 25.2, 25.3). *@
+@{
+    ViewData["Title"] = "Signed out";
+    Layout = "_MinimalLayout";
+}
+<div class="hs-card hs-login-card text-center">
+    <i class="bi bi-box-arrow-right hs-empty-icon" aria-hidden="true"></i>
+    <h1 class="hs-card-title">You've been signed out</h1>
+    <p>Thanks for using HeronSearch. You can sign in again whenever you're ready.</p>
+    <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Sign in again</a>
+</div>

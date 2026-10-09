@@ -1,0 +1,69 @@
+@* Profile: a read-only Email with editable Full Name and Student ID (posts to Profile), plus a Change Password
+   form (posts to ChangePassword). Both forms carry the automatic anti-forgery token. *@
+@model StudentProfilePageViewModel
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Profile</h1>
+        <p>Manage your account details.</p>
+    </div>
+
+    <section class="dash-section">
+        <div class="hs-card">
+            <h2 class="h5 mb-3">Account details</h2>
+            <form asp-controller="Student" asp-action="Profile" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" value="@Model.Profile.Email" readonly />
+                    <span class="student-hint">Your email cannot be changed here.</span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Profile.FullName" class="form-label"></label>
+                    <input asp-for="Profile.FullName" class="form-control" />
+                    <span asp-validation-for="Profile.FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Profile.StudentId" class="form-label"></label>
+                    <input asp-for="Profile.StudentId" class="form-control" />
+                    <span asp-validation-for="Profile.StudentId" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="dash-section">
+        <div class="hs-card" id="change-password">
+            <h2 class="h5 mb-3">Change password</h2>
+            <form asp-controller="Student" asp-action="ChangePassword" method="post">
+                @if (Model.ShowPasswordErrors)
+                {
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                }
+                <div class="mb-3">
+                    <label asp-for="Password.CurrentPassword" class="form-label"></label>
+                    <input asp-for="Password.CurrentPassword" class="form-control" />
+                    <span asp-validation-for="Password.CurrentPassword" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password.NewPassword" class="form-label"></label>
+                    <input asp-for="Password.NewPassword" class="form-control" />
+                    <span asp-validation-for="Password.NewPassword" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password.ConfirmPassword" class="form-label"></label>
+                    <input asp-for="Password.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="Password.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Change password</button>
+            </form>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

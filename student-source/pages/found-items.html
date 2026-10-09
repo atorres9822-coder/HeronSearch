@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Found Items | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/found-items.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Found Items</h1>
+      <a href="report-found.html" class="btn btn-primary">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>Report Found Item
+      </a>
+    </div>
+
+    <div class="toolbar">
+      <form class="search-bar" action="#">
+        <input type="text" name="q" placeholder="Search found items...">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </form>
+
+      <div class="chips" id="category-list">
+        <a href="#" class="chip active">All Items</a>
+
+      </div>
+    </div>
+
+    <section class="item-grid" id="item-list">
+
+      <p class="empty-state">No found items posted yet.</p>
+
+      <template id="item-card-template">
+        <article class="item-card">
+          <img class="item-img" src="" alt="">
+          <div class="item-top">
+            <span class="item-name"></span>
+            <span class="item-date"></span>
+          </div>
+          <p class="item-location"></p>
+          <p class="item-desc"></p>
+          <a href="claim-item.html" class="item-link">Claim Item</a>
+        </article>
+      </template>
+
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+</body>
+</html>

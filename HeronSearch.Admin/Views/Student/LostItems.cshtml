@@ -1,0 +1,15 @@
+@* Lost Items listing: Active Lost items as a searchable, filterable, paged card grid. *@
+@model StudentItemListViewModel
+@{
+    ViewData["Title"] = "Lost Items";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Lost Items</h1>
+        <p>Items reported lost around campus. Found one? Open it to help return it.</p>
+    </div>
+    <section class="dash-section">
+        <partial name="_ItemCards" model="Model" />
+    </section>
+</div>

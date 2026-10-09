@@ -1,0 +1,94 @@
+@* About page: what HeronSearch is, its five features, the four roles, the logo meaning, and the AnagolayCorp
+   credit. Static content only; the tiles use the hs-about styles in site.css (Req 24.1-24.6). *@
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "About";
+
+    // The logo path with the same safe fallback as the layouts.
+    var logoPath = Configuration["Branding:LogoPath"];
+    if (string.IsNullOrWhiteSpace(logoPath) || !logoPath.StartsWith("/") || logoPath.StartsWith("//"))
+    {
+        logoPath = "/images/heronsearch-logo.svg";
+    }
+
+    // The five features: icon, name, and one sentence each.
+    var features = new (string Icon, string Name, string Text)[]
+    {
+        ("bi-megaphone", "Lost Item Reporting", "Students report items they have lost so staff can watch for them."),
+        ("bi-bag-check", "Found Item Registration", "Staff record found items with a photo, category, and location."),
+        ("bi-search", "Search and Filtering", "Everyone can search and filter the listings to find a match quickly."),
+        ("bi-patch-check", "User and Item Verification", "Admins verify accounts and review ownership claims before release."),
+        ("bi-bar-chart-line", "Lost-and-Found Statistics", "Charts and reports show trends by month, location, hour, and category.")
+    };
+
+    // The four roles: name and one sentence each.
+    var roles = new (string Name, string Text)[]
+    {
+        ("Administration", "Full access: manages users, reviews claims, and oversees every item and report."),
+        ("Staff / Personnel", "Registers found items, marks items returned, and reviews claims."),
+        ("Student / User", "Reports lost items, files claims, and searches the listings."),
+        ("Guest", "Browses the public listings without signing in.")
+    };
+
+    // The logo meaning: symbol and what it stands for.
+    var meanings = new (string Symbol, string Text)[]
+    {
+        ("Box", "the keeper of lost things."),
+        ("Light", "the guide for lost things."),
+        ("Heart", "the compassion to help."),
+        ("Arch", "unity, protection, and a safe space for the community.")
+    };
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">About HeronSearch</h1>
+</div>
+
+<div class="hs-card mb-4">
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <img src="@logoPath" alt="HeronSearch" width="64" height="85" />
+        <p class="mb-0">
+            HeronSearch is the University of Makati's Lost &amp; Found Management System. It brings reporting,
+            found-item registration, searching, verification, and statistics together in one place.
+        </p>
+    </div>
+</div>
+
+<h2 class="h5 mb-3">Features</h2>
+<div class="hs-about-tiles mb-4">
+    @foreach (var feature in features)
+    {
+        <div class="hs-about-tile">
+            <span class="hs-about-icon"><i class="bi @feature.Icon" aria-hidden="true"></i></span>
+            <div>
+                <h3>@feature.Name</h3>
+                <p>@feature.Text</p>
+            </div>
+        </div>
+    }
+</div>
+
+<h2 class="h5 mb-3">Roles</h2>
+<div class="hs-about-tiles mb-4">
+    @foreach (var role in roles)
+    {
+        <div class="hs-about-tile">
+            <span class="hs-about-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+            <div>
+                <h3>@role.Name</h3>
+                <p>@role.Text</p>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="hs-card">
+    <div class="hs-card-header"><h2 class="hs-card-title">What the logo means</h2></div>
+    <ul class="hs-about-meaning">
+        @foreach (var meaning in meanings)
+        {
+            <li><strong>@meaning.Symbol</strong> — @meaning.Text</li>
+        }
+    </ul>
+    <p class="text-body-secondary mb-0">A project of AnagolayCorp, University of Makati.</p>
+</div>

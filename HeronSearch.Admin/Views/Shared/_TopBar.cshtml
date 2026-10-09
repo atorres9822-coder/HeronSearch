@@ -1,0 +1,40 @@
+@* Top bar: menu toggle (small screens), brand logo and name, and the signed-in user's name and role.
+   The minimal layout sets ViewData["MinimalTopBar"] so only the logo and name show. *@
+@inject IConfiguration Configuration
+@{
+    // Logo path from Branding:LogoPath. A value that is empty, does not start with "/",
+    // or starts with "//" falls back to the bundled SVG logo.
+    var logoPath = Configuration["Branding:LogoPath"];
+    if (string.IsNullOrWhiteSpace(logoPath) || !logoPath.StartsWith("/") || logoPath.StartsWith("//"))
+    {
+        logoPath = "/images/heronsearch-logo.svg";
+    }
+
+    // The minimal layout shows the logo only (no toggle, no user block).
+    var minimal = ViewData["MinimalTopBar"] as bool? ?? false;
+
+    // The signed-in user's full name (Name claim) and role, shown only on the admin layout when authenticated.
+    var isSignedIn = User?.Identity?.IsAuthenticated ?? false;
+    var fullName = User?.Identity?.Name;
+    var role = User?.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+}
+<header class="hs-topbar">
+    @if (!minimal && isSignedIn)
+    {
+        <button type="button" class="hs-menu-toggle d-lg-none" aria-label="Open menu"
+                data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+            <i class="bi bi-list" aria-hidden="true"></i>
+        </button>
+    }
+    <a class="hs-brand" asp-controller="Dashboard" asp-action="Index">
+        <img class="hs-brand-logo" src="@logoPath" alt="" />
+        <span>HeronSearch</span>
+    </a>
+    @if (!minimal && isSignedIn && !string.IsNullOrWhiteSpace(fullName))
+    {
+        <div class="hs-user">
+            <span class="hs-user-name">@fullName</span>
+            <span class="hs-user-role">@role</span>
+        </div>
+    }
+</header>

@@ -1,0 +1,14 @@
+@* Access_Denied_Page: tells the visitor they lack permission and links back to the Dashboard. *@
+@{
+    ViewData["Title"] = "Access denied";
+    // Signed-in visitors see the full admin shell; signed-out visitors see the minimal shell.
+    Layout = (User.Identity?.IsAuthenticated ?? false) ? "_Layout" : "_MinimalLayout";
+}
+<div class="hs-empty">
+    <i class="bi bi-shield-lock hs-empty-icon" aria-hidden="true"></i>
+    <h1 class="hs-page-title">Access denied</h1>
+    <p>You don't have permission to view this page.</p>
+    <p>
+        <a class="btn btn-primary" href="@Url.Content("~/")">Go to Dashboard</a>
+    </p>
+</div>

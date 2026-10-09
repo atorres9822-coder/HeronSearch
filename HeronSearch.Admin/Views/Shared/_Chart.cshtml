@@ -1,0 +1,19 @@
+@* Chart card: the chart title, then an empty state when the chart has nothing to show, otherwise a
+   canvas that charts.js draws into. The canvas carries role="img" with the text alternative as its
+   aria-label and the chart data in data-chart (Requirement 10.13). *@
+@model ChartViewModel
+<div class="hs-card">
+    <div class="hs-card-header">
+        <h2 class="hs-card-title">@Model.Title</h2>
+    </div>
+    @if (Model.IsEmpty)
+    {
+        <partial name="_EmptyState" model="@(("bi-bar-chart", "No data to display yet.", (string?)null, (string?)null))" />
+    }
+    else
+    {
+        <div class="hs-chart-box">
+            <canvas class="js-chart" role="img" aria-label="@Model.AltText" data-chart="@Model.ToJson()"></canvas>
+        </div>
+    }
+</div>

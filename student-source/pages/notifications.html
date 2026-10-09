@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/notifications.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Notifications</h1>
+      <button type="button" class="btn btn-ghost">Mark all as read</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="chips" id="filter-list">
+        <a href="#" class="chip active">All</a>
+        <a href="#" class="chip">Unread</a>
+      </div>
+    </div>
+
+    <section class="notif-list" id="notification-list">
+
+      <p class="empty-state">You have no notifications yet.</p>
+
+      <template id="notification-template">
+        <a href="#" class="notif">
+          <span class="notif-dot"></span>
+          <div class="notif-body">
+            <p class="notif-title"></p>
+            <p class="notif-text"></p>
+          </div>
+          <span class="notif-time"></span>
+        </a>
+      </template>
+
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+</body>
+</html>

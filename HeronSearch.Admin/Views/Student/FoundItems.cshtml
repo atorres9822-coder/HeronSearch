@@ -1,0 +1,15 @@
+@* Found Items listing: Active Found items as a searchable, filterable, paged card grid. *@
+@model StudentItemListViewModel
+@{
+    ViewData["Title"] = "Found Items";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Found Items</h1>
+        <p>Items handed in or reported found. See yours? Open it to file a claim.</p>
+    </div>
+    <section class="dash-section">
+        <partial name="_ItemCards" model="Model" />
+    </section>
+</div>

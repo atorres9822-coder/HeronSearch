@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="container">
+    <div class="dash-header">
+      <h1>Dashboard</h1>
+      <p>Welcome back! Here's a summary of your reports and claims.</p>
+    </div>
+
+    <section class="dash-section">
+      <div class="stats">
+        <a href="my-reports.html" class="stat-card">
+          <span class="stat-value" id="stat-reports">0</span>
+          <span class="stat-label">My Reports</span>
+        </a>
+        <a href="my-claims.html" class="stat-card">
+          <span class="stat-value" id="stat-claims">0</span>
+          <span class="stat-label">My Claims</span>
+        </a>
+        <a href="notifications.html" class="stat-card">
+          <span class="stat-value" id="stat-notifications">0</span>
+          <span class="stat-label">Unread Notifications</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <h2>Quick Actions</h2>
+      <div class="actions">
+        <a href="report-lost.html" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>
+          </div>
+          <div>
+            <h3>Report Lost Item</h3>
+            <p>Lost something? Post it here.</p>
+          </div>
+        </a>
+        <a href="report-found.html" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <h3>Report Found Item</h3>
+            <p>Found something? Let the owner know.</p>
+          </div>
+        </a>
+        <a href="lost-items.html" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <div>
+            <h3>Search Items</h3>
+            <p>Browse lost and found items.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <div class="section-top">
+        <h2>Recent Activity</h2>
+        <a href="notifications.html">View all</a>
+      </div>
+
+      <div class="activity" id="activity-list">
+
+        <p class="empty-state">No recent activity yet.</p>
+
+        <template id="activity-template">
+          <div class="activity-item">
+            <div>
+              <p class="activity-title"></p>
+              <p class="activity-text"></p>
+            </div>
+            <span class="activity-time"></span>
+          </div>
+        </template>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+</body>
+</html>

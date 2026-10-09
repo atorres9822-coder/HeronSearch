@@ -1,0 +1,15 @@
+@* Search page: one search box over Active items of both types, with a Category filter and paging. *@
+@model StudentItemListViewModel
+@{
+    ViewData["Title"] = "Search Items";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Search Items</h1>
+        <p>Browse every active lost and found item on campus.</p>
+    </div>
+    <section class="dash-section">
+        <partial name="_ItemCards" model="Model" />
+    </section>
+</div>

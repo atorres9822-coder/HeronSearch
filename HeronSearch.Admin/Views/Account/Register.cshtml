@@ -1,0 +1,64 @@
+@* Student Create Account page: mirrors the student source register.html layout on the student layout.
+   The anti-forgery token is emitted by the form tag helper; validation uses the shared Password_Rule. *@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = "_StudentLayout";
+}
+<main class="student-auth">
+    <h1>Create Account</h1>
+    <p class="subtitle">Join HeronSearch to help reconnect lost items</p>
+
+    <form class="student-auth-card" asp-controller="Account" asp-action="Register" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="field">
+            <label asp-for="FullName"></label>
+            <input asp-for="FullName" placeholder="Enter your full name" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" placeholder="Enter your email" autocomplete="username" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="StudentId"></label>
+            <input asp-for="StudentId" placeholder="Enter your student ID (optional)" />
+            <span asp-validation-for="StudentId" class="text-danger"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="Password"></label>
+            <div class="student-input-wrap">
+                <input asp-for="Password" placeholder="Create a password" autocomplete="new-password" />
+                <button type="button" class="student-toggle-eye" aria-label="Show password">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </button>
+            </div>
+            <p class="student-hint">Must be 8 to 100 characters and include a letter and a number.</p>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="ConfirmPassword"></label>
+            <div class="student-input-wrap">
+                <input asp-for="ConfirmPassword" placeholder="Confirm your password" autocomplete="new-password" />
+                <button type="button" class="student-toggle-eye" aria-label="Show password">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </button>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block w-100">Create Account</button>
+    </form>
+
+    <p class="student-auth-switch">Already have an account? <a asp-controller="Account" asp-action="Login">Sign in</a></p>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,47 @@
+@* Reports Overview tab: six summary cards for the date range, the four charts (each with its own empty state
+   via the _Chart partial), and the "Export to CSV" button for the items in the range (Req 22.3, 23.1, 23.5). *@
+@model ReportsViewModel
+@{
+    var fromText = Model.From.ToString("yyyy-MM-dd");
+    var toText = Model.To.ToString("yyyy-MM-dd");
+
+    // The six summary cards: label, value, and icon.
+    var cards = new (string Label, int Value, string Icon)[]
+    {
+        ("Items reported", Model.Counts.TotalItems, "bi-box-seam"),
+        ("Lost", Model.Counts.LostItems, "bi-search"),
+        ("Found", Model.Counts.FoundItems, "bi-bag-check"),
+        ("Returned", Model.Counts.ReturnedItems, "bi-check2-circle"),
+        ("Claims filed", Model.Counts.TotalClaims, "bi-clipboard-check"),
+        ("Claims approved", Model.Counts.ApprovedClaims, "bi-hand-thumbs-up")
+    };
+}
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-outline-secondary" asp-controller="Reports" asp-action="ExportItems"
+       asp-route-from="@fromText" asp-route-to="@toText">
+        <i class="bi bi-download" aria-hidden="true"></i> Export to CSV
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    @foreach (var card in cards)
+    {
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="hs-card hs-stat">
+                <span class="hs-stat-icon"><i class="bi @card.Icon" aria-hidden="true"></i></span>
+                <span class="hs-stat-body">
+                    <span class="hs-stat-value">@card.Value</span>
+                    <span class="hs-stat-label">@card.Label</span>
+                </span>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-xl-6"><partial name="_Chart" model="Model.LocationChart" /></div>
+    <div class="col-12 col-xl-6"><partial name="_Chart" model="Model.MonthChart" /></div>
+    <div class="col-12 col-xl-6"><partial name="_Chart" model="Model.HourChart" /></div>
+    <div class="col-12 col-xl-6"><partial name="_Chart" model="Model.CategoryChart" /></div>
+</div>

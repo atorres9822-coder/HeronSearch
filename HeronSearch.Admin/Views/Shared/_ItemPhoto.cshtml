@@ -1,0 +1,19 @@
+@* Item photo: shows the uploaded photo when ImagePath is set, otherwise a Cream placeholder box
+   with the category icon from ItemLists.IconFor and a visually-hidden "No photo" label.
+   Size "lg" renders the larger thumbnail used by the details modal, Edit, and Review. *@
+@model (string? ImagePath, string Category, string Size)
+@{
+    var isLarge = string.Equals(Model.Size, "lg", StringComparison.OrdinalIgnoreCase);
+    var sizeClass = isLarge ? " hs-thumb-lg" : "";
+}
+@if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+{
+    <img class="hs-thumb@(sizeClass)" src="@Model.ImagePath" loading="lazy" alt="Photo of @Model.Category" />
+}
+else
+{
+    <span class="hs-thumb hs-thumb-placeholder@(sizeClass)">
+        <i class="bi @ItemLists.IconFor(Model.Category)" aria-hidden="true"></i>
+        <span class="visually-hidden">No photo</span>
+    </span>
+}

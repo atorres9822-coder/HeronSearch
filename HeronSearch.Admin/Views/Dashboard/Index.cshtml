@@ -1,0 +1,159 @@
+@* The admin home page: five stat cards, the Lost vs Found monthly line chart and the top-5 locations
+   bar chart, the newest Pending claims, and the newest activity logs (Requirements 11.1, 11.3-11.7). *@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Dashboard</h1>
+</div>
+
+@* Five stat cards: Total Lost, Total Found, Pending Claims, Returned Items, Registered Users. *@
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl">
+        <div class="hs-card hs-stat">
+            <span class="hs-stat-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
+            <span class="hs-stat-body">
+                <span class="hs-stat-value">@Model.TotalLost</span>
+                <span class="hs-stat-label">Total Lost</span>
+            </span>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="hs-card hs-stat">
+            <span class="hs-stat-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+            <span class="hs-stat-body">
+                <span class="hs-stat-value">@Model.TotalFound</span>
+                <span class="hs-stat-label">Total Found</span>
+            </span>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="hs-card hs-stat">
+            <span class="hs-stat-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span>
+            <span class="hs-stat-body">
+                <span class="hs-stat-value">@Model.PendingClaims</span>
+                <span class="hs-stat-label">Pending Claims</span>
+            </span>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="hs-card hs-stat">
+            <span class="hs-stat-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+            <span class="hs-stat-body">
+                <span class="hs-stat-value">@Model.ReturnedItems</span>
+                <span class="hs-stat-label">Returned Items</span>
+            </span>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl">
+        <div class="hs-card hs-stat">
+            <span class="hs-stat-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
+            <span class="hs-stat-body">
+                <span class="hs-stat-value">@Model.RegisteredUsers</span>
+                <span class="hs-stat-label">Registered Users</span>
+            </span>
+        </div>
+    </div>
+</div>
+
+@* The two charts: the Lost vs Found monthly line chart and the top-5 locations horizontal bar chart. *@
+<div class="row g-3 mb-4">
+    <div class="col-12 col-xl-7">
+        <partial name="_Chart" model="Model.MonthlyChart" />
+    </div>
+    <div class="col-12 col-xl-5">
+        <partial name="_Chart" model="Model.LocationChart" />
+    </div>
+</div>
+
+@* The newest Pending claims and the newest activity logs. *@
+<div class="row g-3">
+    @* Pending Claims card: Item, Claimant, Date Filed, a Review link per row and a "View all" link. *@
+    <div class="col-12 col-xl-6">
+        <div class="hs-card">
+            <div class="hs-card-header">
+                <h2 class="hs-card-title">Pending Claims</h2>
+                <a href="/Claims">View all</a>
+            </div>
+            @if (Model.PendingClaimRows.Count == 0)
+            {
+                <partial name="_EmptyState" model="@(("bi-hourglass", "No pending claims right now.", (string?)null, (string?)null))" />
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table hs-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Item</th>
+                                <th scope="col">Claimant</th>
+                                <th scope="col">Date Filed</th>
+                                <th scope="col"><span class="visually-hidden">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var claim in Model.PendingClaimRows)
+                            {
+                                <tr>
+                                    <td>@claim.ItemName</td>
+                                    <td>@claim.ClaimantName</td>
+                                    <td>@DisplayFormat.ShortDate(claim.DateFiled)</td>
+                                    <td class="text-end">
+                                        <a href="/Claims/Review/@claim.ClaimId">Review<span class="visually-hidden"> claim for @claim.ItemName</span></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* Recent Activity card: the 10 newest logs; a null UserName shows "Unknown user". *@
+    <div class="col-12 col-xl-6">
+        <div class="hs-card">
+            <div class="hs-card-header">
+                <h2 class="hs-card-title">Recent Activity</h2>
+            </div>
+            @if (Model.RecentActivity.Count == 0)
+            {
+                <partial name="_EmptyState" model="@(("bi-clock-history", "No activity recorded yet.", (string?)null, (string?)null))" />
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table hs-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">When</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var log in Model.RecentActivity)
+                            {
+                                <tr>
+                                    <td>@DisplayFormat.DateAndTime(log.Timestamp)</td>
+                                    <td>@(log.UserName ?? "Unknown user")</td>
+                                    <td>@log.Action</td>
+                                    <td>@log.Result</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@* Chart.js (local, no CDN) and the chart builder that draws every canvas.js-chart on the page. *@
+@section Scripts {
+    <script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
+    <script src="~/js/charts.js"></script>
+}

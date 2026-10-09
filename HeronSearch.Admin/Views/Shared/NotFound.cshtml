@@ -1,0 +1,22 @@
+@* Not_Found_Page: a friendly "page not found" message linking back to the related list or the Dashboard. *@
+@model NotFoundViewModel
+@{
+    ViewData["Title"] = "Page not found";
+    // Signed-in visitors see the full admin shell; signed-out visitors see the minimal shell.
+    Layout = (User.Identity?.IsAuthenticated ?? false) ? "_Layout" : "_MinimalLayout";
+
+    // Link to the related list when the model names one; otherwise fall back to the Dashboard.
+    var hasList = Model is not null
+        && !string.IsNullOrWhiteSpace(Model.ListName)
+        && !string.IsNullOrWhiteSpace(Model.ListUrl);
+    var linkName = hasList ? Model!.ListName : "Dashboard";
+    var linkUrl = hasList ? Model!.ListUrl : Url.Content("~/");
+}
+<div class="hs-empty">
+    <i class="bi bi-compass hs-empty-icon" aria-hidden="true"></i>
+    <h1 class="hs-page-title">Page not found</h1>
+    <p>We couldn't find the page you were looking for. It may have been moved or removed.</p>
+    <p>
+        <a class="btn btn-primary" href="@linkUrl">Go to @linkName</a>
+    </p>
+</div>

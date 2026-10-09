@@ -1,0 +1,144 @@
+@* Review Claim page: the item card next to the claimant card, the suspended warning, and (when the claim is
+   still Pending) the verification checklist with Approve and the Reject modal. Reviewed claims show read-only
+   reviewer, reviewed-at, and rejection-reason details (Req 18.1, 18.3, 19.1, 19.2, 19.9, 19.14). *@
+@model ClaimReviewViewModel
+@{
+    ViewData["Title"] = $"Review Claim #{Model.Id}";
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Review Claim #@Model.Id</h1>
+    <a class="btn btn-outline-secondary" asp-controller="Claims" asp-action="Index">Back to claims</a>
+</div>
+
+@if (Model.ClaimantIsSuspended)
+{
+    <div class="alert alert-warning" role="alert">
+        The claimant's account is suspended, so this claim cannot be approved.
+    </div>
+}
+
+<div class="row g-3 hs-review">
+    @* Item card: photo, details, and reporter. *@
+    <div class="col-12 col-lg-6">
+        <div class="hs-card h-100">
+            <div class="hs-card-header"><h2 class="hs-card-title">Item</h2></div>
+            <div class="text-center mb-3">
+                <partial name="_ItemPhoto" model="@((Model.ItemImagePath, Model.ItemCategory, "lg"))" />
+            </div>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">@Model.ItemName</dd>
+                <dt class="col-sm-4">Category</dt>
+                <dd class="col-sm-8">@Model.ItemCategory</dd>
+                <dt class="col-sm-4">Location</dt>
+                <dd class="col-sm-8">@Model.ItemLocation</dd>
+                <dt class="col-sm-4">Type</dt>
+                <dd class="col-sm-8">@Model.ItemType</dd>
+                <dt class="col-sm-4">Status</dt>
+                <dd class="col-sm-8"><partial name="_StatusBadge" model="@Model.ItemStatus.ToString()" /></dd>
+                <dt class="col-sm-4">Reporter</dt>
+                <dd class="col-sm-8">@Model.ReporterName</dd>
+            </dl>
+        </div>
+    </div>
+
+    @* Claimant card: who filed the claim, their proof, and when. *@
+    <div class="col-12 col-lg-6">
+        <div class="hs-card h-100">
+            <div class="hs-card-header"><h2 class="hs-card-title">Claimant</h2></div>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">@Model.ClaimantName</dd>
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@Model.ClaimantEmail</dd>
+                <dt class="col-sm-4">Student ID</dt>
+                <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.ClaimantStudentId) ? "—" : Model.ClaimantStudentId)</dd>
+                <dt class="col-sm-4">Account</dt>
+                <dd class="col-sm-8"><partial name="_StatusBadge" model="@Model.ClaimantStatus.ToString()" /></dd>
+                <dt class="col-sm-4">Date Filed</dt>
+                <dd class="col-sm-8">@DisplayFormat.ShortDate(Model.DateFiled)</dd>
+                <dt class="col-sm-4">Proof</dt>
+                <dd class="col-sm-8">@Model.ProofDescription</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+@if (Model.IsPending)
+{
+    @* Pending claim: the verification checklist (Approve is enabled only when all four boxes are checked)
+       and the Reject button that opens the reject modal. *@
+    <div class="hs-card mt-3">
+        <div class="hs-card-header"><h2 class="hs-card-title">Decision</h2></div>
+
+        <form asp-controller="Claims" asp-action="Approve" method="post" class="mb-3">
+            <input type="hidden" asp-for="Id" name="Id" />
+            <fieldset>
+                <legend class="h6">Verification checklist</legend>
+                @for (var i = 0; i < Model.ChecklistLabels.Count; i++)
+                {
+                    var checkId = $"Check{i + 1}";
+                    <div class="form-check">
+                        <input class="form-check-input js-check" type="checkbox" id="@checkId" name="@checkId" value="true" />
+                        <label class="form-check-label" for="@checkId">@Model.ChecklistLabels[i]</label>
+                    </div>
+                }
+            </fieldset>
+            <button type="submit" class="btn btn-success mt-3 js-approve-btn" disabled>Approve claim</button>
+        </form>
+
+        <button type="button" class="btn btn-outline-danger"
+                data-bs-toggle="modal" data-bs-target="#rejectModal">Reject claim</button>
+    </div>
+
+    @* Reject modal: the required reason text area. On an invalid submission the page reopens it (data-open-on-load). *@
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalTitle" aria-hidden="true"
+         data-open-on-load="@(Model.OpenRejectModal ? "true" : null)">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form asp-controller="Claims" asp-action="Reject" method="post">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="rejectModalTitle">Reject claim #@Model.Id</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="Reject_Reason" class="form-label">Reason for rejection</label>
+                        <textarea class="form-control" id="Reject_Reason" name="Reason" rows="4"
+                                  maxlength="500">@Model.Reject.Reason</textarea>
+                        <span class="text-danger" asp-validation-for="Reject.Reason"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Reject claim</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    @* Reviewed claim: read-only reviewer, reviewed-at, and (for a rejection) the reason. *@
+    <div class="hs-card mt-3">
+        <div class="hs-card-header"><h2 class="hs-card-title">Review result</h2></div>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9"><partial name="_StatusBadge" model="@Model.Status.ToString()" /></dd>
+            <dt class="col-sm-3">Reviewer</dt>
+            <dd class="col-sm-9">@(Model.ReviewerName ?? "—")</dd>
+            <dt class="col-sm-3">Reviewed at</dt>
+            <dd class="col-sm-9">@(Model.ReviewedAt.HasValue ? DisplayFormat.DateAndTime(Model.ReviewedAt.Value) : "—")</dd>
+            @if (!string.IsNullOrWhiteSpace(Model.RejectionReason))
+            {
+                <dt class="col-sm-3">Rejection reason</dt>
+                <dd class="col-sm-9">@Model.RejectionReason</dd>
+            }
+        </dl>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

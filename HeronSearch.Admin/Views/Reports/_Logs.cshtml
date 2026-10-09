@@ -1,0 +1,76 @@
+@* Reports System Logs tab: a search box, the logs table (Timestamp, User, Action, Item, Result) for the date
+   range, the pager, and the "Export to CSV" button for the logs in the range (Req 22.8, 23.2, 23.5, 23.6). *@
+@model ReportsViewModel
+@{
+    var fromText = Model.From.ToString("yyyy-MM-dd");
+    var toText = Model.To.ToString("yyyy-MM-dd");
+}
+
+<div class="hs-card mb-4">
+    <form method="get" asp-controller="Reports" asp-action="Index" role="search">
+        <input type="hidden" name="tab" value="logs" />
+        <input type="hidden" name="from" value="@fromText" />
+        <input type="hidden" name="to" value="@toText" />
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-lg-9">
+                <label for="search" class="visually-hidden">Search logs</label>
+                <div class="hs-search">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input type="search" class="form-control" id="search" name="search"
+                           value="@Model.LogSearch" placeholder="Search user, action, or result" />
+                </div>
+            </div>
+            <div class="col-12 col-lg-3 d-grid">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-outline-secondary" asp-controller="Reports" asp-action="ExportLogs"
+       asp-route-from="@fromText" asp-route-to="@toText">
+        <i class="bi bi-download" aria-hidden="true"></i> Export to CSV
+    </a>
+</div>
+
+@if (Model.Logs.Count == 0)
+{
+    <div class="hs-card">
+        <partial name="_EmptyState" model="@(("bi-clock-history", "No activity in this range.", (string?)null, (string?)null))" />
+    </div>
+}
+else
+{
+    <div class="hs-card">
+        <div class="table-responsive">
+            <table class="table hs-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Timestamp</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Item</th>
+                        <th scope="col">Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model.Logs)
+                    {
+                        <tr>
+                            <td>@DisplayFormat.DateAndTime(log.Timestamp)</td>
+                            <td>@(log.UserName ?? "Unknown user")</td>
+                            <td>@log.Action</td>
+                            <td>@(string.IsNullOrWhiteSpace(log.ItemName) ? "—" : log.ItemName)</td>
+                            <td>@log.Result</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3">
+            <partial name="_Pager" model="Model.LogPager" />
+        </div>
+    </div>
+}

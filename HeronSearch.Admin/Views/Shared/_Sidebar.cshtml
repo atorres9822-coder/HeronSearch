@@ -1,0 +1,75 @@
+@* Sidebar: the signed-in navigation drawer (offcanvas below 992px, a static column above).
+   The active section comes from the route's controller value, so sub-pages highlight their parent link. *@
+@{
+    // The current controller name drives which link is active (e.g. Items/Edit keeps "Manage Items" lit).
+    var controller = ViewContext.RouteData.Values["controller"] as string ?? string.Empty;
+    var isAdmin = User?.IsInRole("Admin") ?? false;
+}
+<nav id="sidebar" class="hs-sidebar offcanvas-lg offcanvas-start" tabindex="-1" aria-label="Main navigation">
+    <div class="offcanvas-header">
+        <span class="offcanvas-title">Menu</span>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close menu"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link @(controller == "Dashboard" ? "active" : null)"
+                   asp-controller="Dashboard" asp-action="Index"
+                   aria-current="@(controller == "Dashboard" ? "page" : null)">
+                    <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(controller == "Items" ? "active" : null)"
+                   asp-controller="Items" asp-action="Index"
+                   aria-current="@(controller == "Items" ? "page" : null)">
+                    <i class="bi bi-box-seam" aria-hidden="true"></i>
+                    <span>Manage Items</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(controller == "Claims" ? "active" : null)"
+                   asp-controller="Claims" asp-action="Index"
+                   aria-current="@(controller == "Claims" ? "page" : null)">
+                    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                    <span>Manage Claims</span>
+                </a>
+            </li>
+            @if (isAdmin)
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(controller == "Users" ? "active" : null)"
+                       asp-controller="Users" asp-action="Index"
+                       aria-current="@(controller == "Users" ? "page" : null)">
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <span>Manage Users</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link @(controller == "Reports" ? "active" : null)"
+                   asp-controller="Reports" asp-action="Index"
+                   aria-current="@(controller == "Reports" ? "page" : null)">
+                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                    <span>Reports / History</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(controller == "About" ? "active" : null)"
+                   asp-controller="About" asp-action="Index"
+                   aria-current="@(controller == "About" ? "page" : null)">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <span>About</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                @* Logout opens the confirmation modal; the modal's form does the POST sign-out. *@
+                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    <span>Logout</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</nav>

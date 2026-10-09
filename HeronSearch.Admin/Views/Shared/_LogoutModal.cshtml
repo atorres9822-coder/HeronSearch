@@ -1,0 +1,21 @@
+@* Logout confirmation modal, rendered once by the admin layout. The Sidebar Logout button opens it; the
+   Sign out button posts to /Account/Logout with the automatic anti-forgery token (Req 25.1, 25.2, 25.4). *@
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="logoutModalTitle">Sign out of HeronSearch?</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">You will need to sign in again to return to the admin area.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-controller="Account" asp-action="Logout">
+                    <button type="submit" class="btn btn-primary">Sign out</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

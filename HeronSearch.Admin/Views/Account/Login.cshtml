@@ -1,0 +1,55 @@
+@* Login page: the only sign-in form, on the Minimal_Layout, with a centered card, a password show/hide toggle, and Remember me. Nothing else (5.1, 5.2). *@
+@model LoginViewModel
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "Sign in";
+    Layout = "_MinimalLayout";
+
+    // Logo path (same safe fallback as the layouts) shown at the top of the card.
+    var logoPath = Configuration["Branding:LogoPath"];
+    if (string.IsNullOrWhiteSpace(logoPath) || !logoPath.StartsWith("/") || logoPath.StartsWith("//"))
+    {
+        logoPath = "/images/heronsearch-logo.svg";
+    }
+}
+<div class="hs-card hs-login-card">
+    <img class="hs-login-logo" src="@logoPath" alt="HeronSearch" />
+    <h1 class="hs-card-title text-center">Sign in</h1>
+
+    <form asp-controller="Account" asp-action="Login" method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        @* Model-level errors such as "Invalid email or password." *@
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" autocomplete="username" autofocus />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <div class="hs-password">
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <button type="button" class="hs-password-toggle"
+                        data-password-toggle="Password" aria-controls="Password"
+                        aria-label="Show password">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </button>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="RememberMe" class="form-check-input" />
+            <label asp-for="RememberMe" class="form-check-label"></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Sign In</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

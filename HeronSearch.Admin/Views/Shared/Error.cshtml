@@ -1,0 +1,14 @@
+@* Error_Page: a generic error message with no technical details, linking back to the Dashboard. *@
+@{
+    ViewData["Title"] = "Something went wrong";
+    // Signed-in visitors see the full admin shell; signed-out visitors see the minimal shell.
+    Layout = (User.Identity?.IsAuthenticated ?? false) ? "_Layout" : "_MinimalLayout";
+}
+<div class="hs-empty">
+    <i class="bi bi-exclamation-triangle hs-empty-icon" aria-hidden="true"></i>
+    <h1 class="hs-page-title">Something went wrong</h1>
+    <p>An unexpected error occurred. Please try again in a moment.</p>
+    <p>
+        <a class="btn btn-primary" href="@Url.Content("~/")">Go to Dashboard</a>
+    </p>
+</div>

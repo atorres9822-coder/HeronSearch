@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Item | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/claim-item.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="form-page">
+    <h1>Claim Item</h1>
+    <p class="subtitle">Describe the item and upload proof that it belongs to you. An admin will review your claim.</p>
+
+    <form class="form-card" action="#" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="item_id" id="item-id" value="">
+
+      <div class="item-summary">
+        <img class="summary-img" id="item-image" src="" alt="">
+        <div>
+          <p class="summary-name" id="item-name"></p>
+          <p class="summary-meta" id="item-location"></p>
+          <p class="summary-meta" id="item-date"></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="description">Describe the Item*</label>
+        <textarea id="description" name="description" placeholder="Color, brand, marks, or contents that only the owner would know" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="lost-location">Where did you lose it?*</label>
+        <input type="text" id="lost-location" name="lost_location" placeholder="e.g., Library, 2nd floor" required>
+      </div>
+
+      <div class="field">
+        <label for="proof">Proof of Ownership*</label>
+        <input type="file" id="proof" name="proof" accept="image/*,.pdf" required>
+        <p class="hint">A photo of the item, a receipt, or anything that shows it is yours.</p>
+      </div>
+
+      <div class="field">
+        <label for="contact">Contact Information*</label>
+        <input type="text" id="contact" name="contact" placeholder="Your email or phone number" required>
+      </div>
+
+      <div class="form-actions">
+        <a href="found-items.html" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary">Submit Claim</button>
+      </div>
+    </form>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+</body>
+</html>

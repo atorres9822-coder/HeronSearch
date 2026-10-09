@@ -1,0 +1,20 @@
+@* Flash messages: renders the TempData "Success" and "Error" strings as dismissible Bootstrap
+   alerts, each naming the affected record. Nothing is rendered when neither message is present. *@
+@{
+    var success = TempData["Success"] as string;
+    var error = TempData["Error"] as string;
+}
+@if (!string.IsNullOrWhiteSpace(success))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="status">
+        <span>@success</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span>@error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

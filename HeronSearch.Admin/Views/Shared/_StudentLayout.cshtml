@@ -1,0 +1,39 @@
+@* Student_Layout: the public/student shell with the student navbar and footer from the student source
+   components, rendered server-side (no fetch()). Loads site.css, Bootstrap Icons, and student.css, plus the
+   local jQuery, Bootstrap bundle, site.js and student.js. Includes _Alerts for flash messages. *@
+@inject IConfiguration Configuration
+@{
+    // Logo path (same safe fallback as the admin layouts) used as the page icon.
+    var logoPath = Configuration["Branding:LogoPath"];
+    if (string.IsNullOrWhiteSpace(logoPath) || !logoPath.StartsWith("/") || logoPath.StartsWith("//"))
+    {
+        logoPath = "/images/heronsearch-logo.svg";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · HeronSearch</title>
+    <link rel="icon" href="@logoPath" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/student.css" asp-append-version="true" />
+</head>
+<body class="student-body">
+    <a class="visually-hidden-focusable hs-skip-link" href="#main-content">Skip to main content</a>
+    <partial name="_StudentNavbar" />
+    <main id="main-content" class="student-main" tabindex="-1">
+        <partial name="_Alerts" />
+        @RenderBody()
+    </main>
+    <partial name="_StudentFooter" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/student.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

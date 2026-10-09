@@ -1,0 +1,69 @@
+@* Add Staff Account page: the form that creates a Verified Staff account. Both password fields carry the
+   show/hide toggle wired by site.js. The form posts with the automatic anti-forgery token (Req 20.2, 21.9, 21.12). *@
+@model AddStaffViewModel
+@{
+    ViewData["Title"] = "Add Staff Account";
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Add Staff Account</h1>
+</div>
+
+<div class="hs-card">
+    <form asp-controller="Users" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control" autofocus />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" autocomplete="off" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="StaffId" class="form-label"></label>
+            <input asp-for="StaffId" class="form-control" />
+            <span asp-validation-for="StaffId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <div class="hs-password">
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                <button type="button" class="hs-password-toggle"
+                        data-password-toggle="Password" aria-controls="Password"
+                        aria-label="Show password">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </button>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ConfirmPassword" class="form-label"></label>
+            <div class="hs-password">
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <button type="button" class="hs-password-toggle"
+                        data-password-toggle="ConfirmPassword" aria-controls="ConfirmPassword"
+                        aria-label="Show password">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </button>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Create account</button>
+            <a class="btn btn-outline-secondary" asp-controller="Users" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

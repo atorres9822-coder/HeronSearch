@@ -1,0 +1,33 @@
+@* Report Found Item page: the form posting multipart data to Student/ReportFound (with the automatic
+   anti-forgery token), the shared item field partial, and a Save/Cancel pair. *@
+@model ItemFormViewModel
+@{
+    ViewData["Title"] = "Report Found Item";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Report Found Item</h1>
+        <p>Found something on campus? Report it so the owner can claim it.</p>
+    </div>
+
+    <section class="dash-section">
+        <div class="hs-card">
+            <form asp-controller="Student" asp-action="ReportFound" method="post" enctype="multipart/form-data">
+                @* Model-level errors (for example a photo that could not be saved) show above the fields. *@
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <partial name="../Items/_ItemFormFields" model="Model" />
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Report Item</button>
+                    <a class="btn btn-outline-secondary" asp-controller="Student" asp-action="FoundItems">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

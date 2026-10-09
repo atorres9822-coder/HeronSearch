@@ -1,0 +1,73 @@
+@* Shared student card grid: the GET search box and Category filter, then the item-grid of cards (each with a
+   "View details" link), the pager, and the "Clear filters" empty state. Reused by LostItems, FoundItems, and Search. *@
+@model StudentItemListViewModel
+
+<div class="hs-card mb-4">
+    <form method="get" asp-controller="Student" asp-action="@Model.Action" role="search">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-lg-7">
+                <label for="search" class="visually-hidden">Search items</label>
+                <div class="hs-search">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input type="search" class="form-control" id="search" name="search"
+                           value="@Model.Search" placeholder="Search name, description, or location" />
+                </div>
+            </div>
+            <div class="col-8 col-lg-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="">All categories</option>
+                    @foreach (var categoryName in ItemLists.Categories)
+                    {
+                        <option value="@categoryName" selected="@(categoryName == Model.Category)">@categoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-4 col-lg-2">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@if (Model.Cards.Count == 0)
+{
+    <div class="hs-card">
+        <partial name="_EmptyState" model="@(("bi-search", "No items match your search.", (string?)"Clear filters", (string?)$"/Student/{Model.Action}"))" />
+    </div>
+}
+else
+{
+    <div class="item-grid">
+        @foreach (var card in Model.Cards)
+        {
+            <div class="hs-card">
+                @if (!string.IsNullOrWhiteSpace(card.ImagePath))
+                {
+                    <img class="item-img" src="@card.ImagePath" loading="lazy" alt="Photo of @card.Category" />
+                }
+                else
+                {
+                    <span class="item-img hs-thumb-placeholder d-flex align-items-center justify-content-center">
+                        <i class="bi @ItemLists.IconFor(card.Category)" aria-hidden="true"></i>
+                        <span class="visually-hidden">No photo</span>
+                    </span>
+                }
+                <div class="item-top">
+                    <span>@card.Name</span>
+                    <span class="item-date">@DisplayFormat.ShortDate(card.DateReported)</span>
+                </div>
+                <p class="item-location">@card.Category · @card.Location</p>
+                @if (!string.IsNullOrWhiteSpace(card.Description))
+                {
+                    <p class="item-desc">@card.Description</p>
+                }
+                <a class="item-link" asp-controller="Student" asp-action="Details" asp-route-id="@card.Id">View details</a>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4">
+        <partial name="_Pager" model="Model.Pager" />
+    </div>
+}

@@ -1,0 +1,49 @@
+@* Pager: the "Showing X–Y of Z {noun}" range text plus Previous, up to five page numbers, and Next.
+   Every link keeps the current filters by passing PagerViewModel.RouteValuesFor to asp-all-route-data
+   (Requirements 12.10, 12.11). The current page is marked aria-current="page". *@
+@model PagerViewModel
+<nav class="d-flex flex-wrap align-items-center justify-content-between gap-2" aria-label="@Model.Noun pages">
+    <p class="text-body-secondary mb-0">@Model.RangeText</p>
+    @if (Model.TotalPages > 1)
+    {
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                @if (Model.HasPrevious)
+                {
+                    <a class="page-link" asp-all-route-data="@Model.RouteValuesFor(Model.Page - 1)"
+                       aria-label="Previous page">Previous</a>
+                }
+                else
+                {
+                    <span class="page-link" aria-hidden="true">Previous</span>
+                }
+            </li>
+            @foreach (var pageNumber in Model.PageNumbers)
+            {
+                var isCurrent = pageNumber == Model.Page;
+                <li class="page-item @(isCurrent ? "active" : "")">
+                    @if (isCurrent)
+                    {
+                        <span class="page-link" aria-current="page">@pageNumber</span>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-all-route-data="@Model.RouteValuesFor(pageNumber)"
+                           aria-label="Page @pageNumber">@pageNumber</a>
+                    }
+                </li>
+            }
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                @if (Model.HasNext)
+                {
+                    <a class="page-link" asp-all-route-data="@Model.RouteValuesFor(Model.Page + 1)"
+                       aria-label="Next page">Next</a>
+                }
+                else
+                {
+                    <span class="page-link" aria-hidden="true">Next</span>
+                }
+            </li>
+        </ul>
+    }
+</nav>

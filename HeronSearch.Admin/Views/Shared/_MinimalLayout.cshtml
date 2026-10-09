@@ -1,0 +1,36 @@
+@* Minimal_Layout: the signed-out shell (login, error pages) with a logo-only top bar, centered content, and footer. *@
+@inject IConfiguration Configuration
+@{
+    // Logo path (same fallback as _TopBar) used as the page icon.
+    var logoPath = Configuration["Branding:LogoPath"];
+    if (string.IsNullOrWhiteSpace(logoPath) || !logoPath.StartsWith("/") || logoPath.StartsWith("//"))
+    {
+        logoPath = "/images/heronsearch-logo.svg";
+    }
+    // Tell _TopBar to show the logo only (no menu toggle, no user block).
+    ViewData["MinimalTopBar"] = true;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · HeronSearch</title>
+    <link rel="icon" href="@logoPath" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="hs-body">
+    <a class="visually-hidden-focusable hs-skip-link" href="#main-content">Skip to main content</a>
+    <partial name="_TopBar" />
+    <main id="main-content" class="hs-minimal-main" tabindex="-1">
+        @RenderBody()
+    </main>
+    <partial name="_Footer" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

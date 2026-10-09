@@ -1,0 +1,53 @@
+@* Claim this item: shows the Active Found item being claimed with the student's contact email (read-only) and a
+   required proof-of-ownership field, posting to Student/Claim with the automatic anti-forgery token. *@
+@model ClaimFormViewModel
+@{
+    ViewData["Title"] = "Claim Item";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Claim this item</h1>
+        <p>Tell us why '@Model.ItemName' belongs to you. Staff will review your claim.</p>
+    </div>
+
+    <section class="dash-section">
+        <div class="hs-card">
+            <form asp-controller="Student" asp-action="Claim" method="post">
+                <input type="hidden" asp-for="ItemId" />
+                @* Model-level errors (reported-item block, duplicate pending claim) show above the fields. *@
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <partial name="_ItemPhoto" model="@((Model.ItemImagePath, Model.ItemCategory, "lg"))" />
+                    <div>
+                        <div class="fw-semibold">@Model.ItemName</div>
+                        <div class="text-body-secondary small">@Model.ItemCategory</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contact</label>
+                    <input class="form-control" value="@Model.ContactEmail" readonly />
+                    <span class="student-hint">We will contact you at your account email.</span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ProofDescription" class="form-label"></label>
+                    <textarea asp-for="ProofDescription" class="form-control" rows="5"
+                              placeholder="Describe identifying details, where and when you lost it, and anything not in the public listing."></textarea>
+                    <span asp-validation-for="ProofDescription" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">File Claim</button>
+                    <a class="btn btn-outline-secondary" asp-controller="Student" asp-action="Details" asp-route-id="@Model.ItemId">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

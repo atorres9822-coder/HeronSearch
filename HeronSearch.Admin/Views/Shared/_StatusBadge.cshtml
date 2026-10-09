@@ -1,0 +1,4 @@
+@* Status pill: renders a status name as a rounded Bootstrap badge whose color comes from
+   DisplayFormat.StatusBadgeClass. The model is the status name string (Requirements 9.12, 9.13). *@
+@model string
+<span class="badge rounded-pill @DisplayFormat.StatusBadgeClass(Model)">@Model</span>

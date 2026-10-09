@@ -1,0 +1,86 @@
+@* Student dashboard: real stat cards (My Reports, My Claims, Unread Notifications), quick actions, and the
+   student's recent activity, mirroring the student source dashboard.html layout. *@
+@model StudentDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_StudentLayout";
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>Dashboard</h1>
+        <p>Welcome back! Here's a summary of your reports and claims.</p>
+    </div>
+
+    <section class="dash-section">
+        <div class="stats">
+            <a class="stat-card" asp-controller="Student" asp-action="MyReports">
+                <span class="stat-value">@Model.MyReportsCount</span>
+                <span class="stat-label">My Reports</span>
+            </a>
+            <a class="stat-card" asp-controller="Student" asp-action="MyClaims">
+                <span class="stat-value">@Model.MyClaimsCount</span>
+                <span class="stat-label">My Claims</span>
+            </a>
+            <a class="stat-card" asp-controller="Student" asp-action="Notifications">
+                <span class="stat-value">@Model.UnreadNotifications</span>
+                <span class="stat-label">Unread Notifications</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="dash-section">
+        <h2>Quick Actions</h2>
+        <div class="actions">
+            <a class="action-card" asp-controller="Student" asp-action="ReportLost">
+                <div class="action-icon">
+                    <svg class="student-icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>
+                </div>
+                <div>
+                    <h3>Report Lost Item</h3>
+                    <p>Lost something? Post it here.</p>
+                </div>
+            </a>
+            <a class="action-card" asp-controller="Student" asp-action="ReportFound">
+                <div class="action-icon">
+                    <svg class="student-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+                <div>
+                    <h3>Report Found Item</h3>
+                    <p>Found something? Let the owner know.</p>
+                </div>
+            </a>
+            <a class="action-card" asp-controller="Student" asp-action="Search">
+                <div class="action-icon">
+                    <svg class="student-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <div>
+                    <h3>Search Items</h3>
+                    <p>Browse lost and found items.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="dash-section">
+        <h2>Recent Activity</h2>
+        <div class="hs-card">
+            @if (Model.RecentActivity.Count == 0)
+            {
+                <p class="text-center text-muted mb-0 py-4">No recent activity yet.</p>
+            }
+            else
+            {
+                <ul class="student-activity">
+                    @foreach (var row in Model.RecentActivity)
+                    {
+                        <li>
+                            <i class="bi @row.Icon" aria-hidden="true"></i>
+                            <span class="student-activity-msg">@row.Message</span>
+                            <span class="student-activity-when">@DisplayFormat.ShortDate(row.When)</span>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </section>
+</div>

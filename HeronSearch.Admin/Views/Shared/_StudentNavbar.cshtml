@@ -1,0 +1,84 @@
+@* Student navbar: logo plus the signed-in student links (Home, Lost/Found, Report, My Reports, My Claims,
+   Notifications with an unread count, Profile), mirroring the student source header.html. Signed-out visitors
+   (landing/register) get Create Account and Log in buttons instead. *@
+@using System.Globalization
+@using System.Security.Claims
+@using HeronSearch.Admin.Data
+@using HeronSearch.Admin.Models
+@using Microsoft.EntityFrameworkCore
+@inject IConfiguration Configuration
+@inject AppDbContext Db
+@{
+    // Logo path with the same safe fallback the admin layouts use.
+    var logoPath = Configuration["Branding:LogoPath"];
+    if (string.IsNullOrWhiteSpace(logoPath) || !logoPath.StartsWith("/") || logoPath.StartsWith("//"))
+    {
+        logoPath = "/images/heronsearch-logo.svg";
+    }
+    var signedIn = User.Identity?.IsAuthenticated == true && User.IsInRole("Student");
+
+    // The current action name, used to mark the matching student link active (maroon) with aria-current.
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    // Returns "active" when the given action is the current student page, otherwise null (no class).
+    Func<string, string?> navActive = action =>
+        string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase) ? "active" : null;
+
+    // The unread-notification count for the badge: this student's claims reviewed in the last 7 days.
+    var unread = 0;
+    if (signedIn
+        && int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var studentId))
+    {
+        var cutoff = DateTime.Now.AddDays(-7);
+        unread = await Db.Claims.AsNoTracking().CountAsync(c =>
+            c.ClaimantUserId == studentId
+            && c.Status != ClaimStatus.Pending
+            && c.ReviewedAt != null
+            && c.ReviewedAt >= cutoff);
+    }
+}
+<header class="student-navbar">
+    <a asp-controller="@(signedIn ? "Student" : "Home")" asp-action="Index">
+        <img src="@logoPath" alt="HeronSearch logo" />
+    </a>
+    @if (signedIn)
+    {
+        <nav class="student-nav-links">
+            <a asp-controller="Student" asp-action="Index" class="@navActive("Index")"
+               aria-current="@(navActive("Index") == null ? null : "page")">Home</a>
+            <a asp-controller="Student" asp-action="LostItems" class="@navActive("LostItems")"
+               aria-current="@(navActive("LostItems") == null ? null : "page")">Lost Items</a>
+            <a asp-controller="Student" asp-action="FoundItems" class="@navActive("FoundItems")"
+               aria-current="@(navActive("FoundItems") == null ? null : "page")">Found Items</a>
+            <a asp-controller="Student" asp-action="ReportLost" class="@navActive("ReportLost")"
+               aria-current="@(navActive("ReportLost") == null ? null : "page")">Report Lost</a>
+            <a asp-controller="Student" asp-action="ReportFound" class="@navActive("ReportFound")"
+               aria-current="@(navActive("ReportFound") == null ? null : "page")">Report Found</a>
+            <a asp-controller="Student" asp-action="MyReports" class="@navActive("MyReports")"
+               aria-current="@(navActive("MyReports") == null ? null : "page")">My Reports</a>
+            <a asp-controller="Student" asp-action="MyClaims" class="@navActive("MyClaims")"
+               aria-current="@(navActive("MyClaims") == null ? null : "page")">My Claims</a>
+            <a asp-controller="Student" asp-action="Notifications" class="@navActive("Notifications")"
+               aria-current="@(navActive("Notifications") == null ? null : "page")">
+                Notifications
+                @if (unread > 0)
+                {
+                    <span class="student-nav-badge" aria-label="@unread unread">@unread</span>
+                }
+            </a>
+            <a asp-controller="Student" asp-action="Profile" class="@navActive("Profile")"
+               aria-current="@(navActive("Profile") == null ? null : "page")">Profile</a>
+            @* Logout posts to /Account/Logout with the automatic anti-forgery token; it works for any signed-in user. *@
+            <form asp-controller="Account" asp-action="Logout" method="post" class="student-logout-form">
+                <button type="submit" class="btn btn-outline-primary">Logout</button>
+            </form>
+        </nav>
+    }
+    else
+    {
+        <nav class="student-nav-links">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Create Account</a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary">Log in</a>
+        </nav>
+    }
+</header>

@@ -1,0 +1,39 @@
+@* Edit Item page: the current photo plus read-only Type and Status badges, then the Edit form posting
+   multipart data to Items/Edit/{id} with a hidden Id and the shared fields (Req 14.2, 7.1, 7.5, 7.6, 10.6). *@
+@model ItemFormViewModel
+@{
+    ViewData["Title"] = "Edit Item";
+}
+
+<div class="hs-page-header">
+    <h1 class="hs-page-title">Edit Item</h1>
+</div>
+
+<div class="hs-card">
+    @* Current photo (or the category placeholder) and the read-only Type and Status badges. *@
+    <div class="mb-4">
+        <partial name="_ItemPhoto" model="@((Model.CurrentImagePath, Model.Category, "lg"))" />
+        <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge rounded-pill text-bg-secondary">@Model.TypeText</span>
+            <partial name="_StatusBadge" model="@Model.StatusText" />
+        </div>
+    </div>
+
+    <form asp-controller="Items" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        @* Model-level errors (for example a photo that could not be saved) show above the fields. *@
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <partial name="_ItemFormFields" model="Model" />
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a class="btn btn-outline-secondary" asp-controller="Items" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

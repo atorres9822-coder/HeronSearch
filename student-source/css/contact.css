@@ -1,0 +1,9 @@
+.notice {
+  margin-bottom: 18px; padding: 10px 12px;
+  border-radius: 6px; background: #eff6ff;
+  font-size: 12px; line-height: 1.5;
+}
+.notice[hidden] { display: none; }
+
+.contact-alt { margin-top: 20px; text-align: center; font-size: 13px; color: var(--muted); }
+.contact-alt a { color: var(--blue); }

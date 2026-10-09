@@ -1,0 +1,55 @@
+@* Shared item form fields used by Create and Edit: Name, Category/Location selects (pre-selected on Edit),
+   Date Found (date input capped at today), Description, and the optional Photo upload (Req 14.1, 14.2, 14.5). *@
+@model ItemFormViewModel
+@{
+    // The Date Found input may not be later than today, so cap it with today's date in yyyy-MM-dd.
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" autofocus />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Category" class="form-label"></label>
+    <select asp-for="Category" class="form-select">
+        <option value="">Select a category</option>
+        @foreach (var categoryName in ItemLists.Categories)
+        {
+            <option value="@categoryName" selected="@(categoryName == Model.Category)">@categoryName</option>
+        }
+    </select>
+    <span asp-validation-for="Category" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Location" class="form-label"></label>
+    <select asp-for="Location" class="form-select">
+        <option value="">Select a location</option>
+        @foreach (var locationName in ItemLists.Locations)
+        {
+            <option value="@locationName" selected="@(locationName == Model.Location)">@locationName</option>
+        }
+    </select>
+    <span asp-validation-for="Location" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="DateFound" class="form-label"></label>
+    <input asp-for="DateFound" type="date" class="form-control" max="@today" />
+    <span asp-validation-for="DateFound" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Photo" class="form-label"></label>
+    <input asp-for="Photo" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+    <span asp-validation-for="Photo" class="text-danger"></span>
+</div>

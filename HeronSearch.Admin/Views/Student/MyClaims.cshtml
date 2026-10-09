@@ -1,0 +1,88 @@
+@* My Claims: the signed-in student's own claims by tab (Pending, Approved, Rejected) with count badges, a table
+   of the item name, filing date, and status, the rejection reason when Rejected, and the shared pager. *@
+@model StudentClaimListViewModel
+@{
+    ViewData["Title"] = "My Claims";
+    Layout = "_StudentLayout";
+
+    // The three tabs and their counts, in display order; the active tab gets aria-current="page".
+    var tabs = new (string Name, int Count)[]
+    {
+        (nameof(ClaimStatus.Pending), Model.PendingCount),
+        (nameof(ClaimStatus.Approved), Model.ApprovedCount),
+        (nameof(ClaimStatus.Rejected), Model.RejectedCount)
+    };
+}
+<div class="student-container">
+    <div class="dash-header">
+        <h1>My Claims</h1>
+        <p>Claims you have filed and their current status.</p>
+    </div>
+
+    <section class="dash-section">
+        @* Tabs with count badges; each is a GET link that switches the tab. *@
+        <ul class="nav nav-pills hs-tabs mb-4" role="tablist">
+            @foreach (var tab in tabs)
+            {
+                var isActive = Model.Tab == tab.Name;
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link @(isActive ? "active" : null)"
+                       asp-controller="Student" asp-action="MyClaims" asp-route-tab="@tab.Name"
+                       aria-current="@(isActive ? "page" : null)">
+                        @tab.Name <span class="badge rounded-pill text-bg-light ms-1">@tab.Count</span>
+                    </a>
+                </li>
+            }
+        </ul>
+
+        @if (Model.Rows.Count == 0)
+        {
+            <div class="hs-card">
+                <partial name="_EmptyState" model="@(("bi-clipboard-check", $"No {Model.Tab} claims.", (string?)null, (string?)null))" />
+            </div>
+        }
+        else
+        {
+            <div class="hs-card">
+                <div class="table-responsive">
+                    <table class="table hs-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Claim #</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Date Filed</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in Model.Rows)
+                            {
+                                <tr>
+                                    <td>#@row.Id</td>
+                                    <td>@row.ItemName</td>
+                                    <td>@DisplayFormat.ShortDate(row.DateFiled)</td>
+                                    <td><partial name="_StatusBadge" model="@row.Status.ToString()" /></td>
+                                    <td>
+                                        @if (row.Status == ClaimStatus.Rejected && !string.IsNullOrWhiteSpace(row.RejectionReason))
+                                        {
+                                            <span class="text-body-secondary small">@row.RejectionReason</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-body-secondary small">—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <partial name="_Pager" model="Model.Pager" />
+                </div>
+            </div>
+        }
+    </section>
+</div>

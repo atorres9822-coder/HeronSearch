@@ -1,0 +1,58 @@
+@* Item details modal: one Bootstrap modal per table row, opened by that row's View button. It shows the
+   photo (or a category placeholder), then a definition list of the item's details, plus a Close button.
+   Escape, the backdrop, and the Close button all dismiss it (standard Bootstrap behavior) (Req 13.2). *@
+@model ItemRowViewModel
+@{
+    // A per-row id so each View button targets its own modal (data-bs-target="#itemDetails-{id}").
+    var modalId = $"itemDetails-{Model.Id}";
+    var titleId = $"{modalId}-title";
+}
+<div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@titleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="@titleId">@Model.Name</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @* Photo or the Cream category placeholder, shown at the larger thumbnail size. *@
+                <div class="text-center mb-3">
+                    <partial name="_ItemPhoto" model="@((Model.ImagePath, Model.Category, "lg"))" />
+                </div>
+
+                @* The item's details as a definition list; each term/value pair is one grid row. *@
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+
+                    <dt class="col-sm-4">Category</dt>
+                    <dd class="col-sm-8">@Model.Category</dd>
+
+                    <dt class="col-sm-4">Location</dt>
+                    <dd class="col-sm-8">@Model.Location</dd>
+
+                    <dt class="col-sm-4">Date Reported</dt>
+                    <dd class="col-sm-8">@DisplayFormat.ShortDate(Model.DateReported)</dd>
+
+                    <dt class="col-sm-4">Type</dt>
+                    <dd class="col-sm-8">@Model.Type</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><partial name="_StatusBadge" model="@Model.Status.ToString()" /></dd>
+
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Description) ? "—" : Model.Description)</dd>
+
+                    <dt class="col-sm-4">Reporter</dt>
+                    <dd class="col-sm-8">@Model.ReporterName</dd>
+
+                    <dt class="col-sm-4">Claims</dt>
+                    <dd class="col-sm-8">@Model.ClaimCount</dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

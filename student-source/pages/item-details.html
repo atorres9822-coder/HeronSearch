@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Details | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/item-details.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="container">
+    <a href="lost-items.html" class="back-link">
+      <svg class="icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>Back to Lost Items
+    </a>
+
+    <article class="details" id="item-details">
+      <img class="details-img" id="item-image" src="" alt="">
+
+      <div class="details-body">
+        <span class="badge">Lost</span>
+        <h1 id="item-name"></h1>
+
+        <dl class="details-list">
+          <div>
+            <dt>Category</dt>
+            <dd id="item-category"></dd>
+          </div>
+          <div>
+            <dt>Last seen at</dt>
+            <dd id="item-location"></dd>
+          </div>
+          <div>
+            <dt>Date lost</dt>
+            <dd id="item-date"></dd>
+          </div>
+          <div>
+            <dt>Reported by</dt>
+            <dd id="item-reporter"></dd>
+          </div>
+        </dl>
+
+        <div class="details-desc">
+          <h2>Description</h2>
+          <p id="item-description"></p>
+        </div>
+
+        <div class="contact-card">
+          <h2>Contact the owner</h2>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Found Item | HeronSearch</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/report-found.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="form-page">
+    <h1>Report an Item</h1>
+    <p class="subtitle">Please provide as much detail as possible to help with identification.</p>
+
+    <form class="form-card" action="#" method="post">
+      <div class="tabs">
+        <a href="report-lost.html" class="tab">I Lost an Item</a>
+        <a href="report-found.html" class="tab active">I Found an Item</a>
+      </div>
+
+      <input type="hidden" name="type" value="found">
+
+      <div class="field">
+        <label for="name">Item Name*</label>
+        <input type="text" id="name" name="name" placeholder="e.g., Black Nike Backpack" required>
+      </div>
+
+      <div class="field">
+        <label for="category">Category*</label>
+        <select id="category" name="category" required>
+          <option value="">Select a category</option>
+          <!-- Dito ilalagay ng backend ang mga category ng admin, e.g.:
+               <option value="1">Electronics</option> -->
+        </select>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="location">Location*</label>
+          <input type="text" id="location" name="location" placeholder="Where was it found?" required>
+        </div>
+        <div class="field">
+          <label for="date">Date*</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="description">Description*</label>
+        <textarea id="description" name="description" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="contact">Contact Information*</label>
+        <input type="text" id="contact" name="contact" placeholder="Your email or phone number" required>
+      </div>
+
+      <div class="form-actions">
+        <a href="dashboard.html" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary">Submit Report</button>
+      </div>
+    </form>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+</body>
+</html>
